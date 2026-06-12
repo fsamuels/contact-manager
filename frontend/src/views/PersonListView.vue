@@ -121,14 +121,14 @@ watch(
             <td>{{ person.lastName }}</td>
             <td>{{ person.emailAddress }}</td>
             <td class="actions">
-              <a
+              <RouterLink
                 class="icon-link"
-                :href="`/persons/${person.id}/notes`"
+                :to="{ name: 'person-notes', params: { id: person.id } }"
                 :title="`Notes for ${personName(person)} (${person.noteCount})`"
                 :aria-label="`Notes for ${personName(person)} (${person.noteCount})`"
               >
                 <i class="fa-solid fa-note-sticky" aria-hidden="true"></i>
-              </a>
+              </RouterLink>
               <RouterLink
                 class="icon-link"
                 :to="{ name: 'person-edit', params: { id: person.id } }"

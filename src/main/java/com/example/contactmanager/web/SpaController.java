@@ -20,7 +20,8 @@ public class SpaController {
             "/app/",
             "/app/persons/new",
             "/app/persons/{id}/edit",
-            "/app/persons/{id}/delete"
+            "/app/persons/{id}/delete",
+            "/app/persons/{id}/notes"
     })
     public String app() {
         return "forward:/app/index.html";

@@ -52,13 +52,13 @@ Browser
 
 | Path | Responsibility |
 |---|---|
-| `src/api/` | Thin fetch wrappers; `parseJsonResponse` in `http.ts` converts non-OK responses and `application/problem+json` bodies into typed `ApiError` exceptions |
-| `src/types/` | TypeScript interfaces mirroring the Java DTOs (`PersonDto`, `PageDto`, `ProblemDetail`) |
+| `src/api/` | Thin fetch wrappers (`persons.ts`, `notes.ts`); `parseJsonResponse` in `http.ts` converts non-OK responses and `application/problem+json` bodies into typed `ApiError` exceptions |
+| `src/types/` | TypeScript interfaces mirroring the Java DTOs (`PersonDto`, `NoteDto`, `PageDto`, `ProblemDetail`) |
 | `src/utils/personValidation.ts` | Client-side field validation logic (mirrors Bean Validation rules) |
 | `src/composables/useTheme.ts` | Module-level reactive theme state; reads/writes `localStorage` and `html[data-theme]` |
 | `src/constants/themes.ts` | Single source of truth for the 10 theme IDs and labels |
 | `src/components/` | Reusable components: `PersonForm` (controlled form with blur-validation), `ThemePicker` (dropdown menu), `ClassicUiLink` (back-link to JSP UI) |
-| `src/views/` | Route-level components: `PersonListView`, `PersonFormView` (create + edit), `PersonDeleteView` |
+| `src/views/` | Route-level components: `PersonListView`, `PersonFormView` (create + edit), `PersonDeleteView`, `PersonNotesView` |
 | `src/router/index.ts` | Vue Router with `createWebHistory('/app/')` |
 
 ## Data model

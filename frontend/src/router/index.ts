@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import PersonDeleteView from '../views/PersonDeleteView.vue';
 import PersonFormView from '../views/PersonFormView.vue';
 import PersonListView from '../views/PersonListView.vue';
+import PersonNotesView from '../views/PersonNotesView.vue';
 
 const router = createRouter({
   history: createWebHistory('/app/'),
@@ -25,6 +26,11 @@ const router = createRouter({
       path: '/persons/:id/delete',
       name: 'person-delete',
       component: PersonDeleteView,
+    },
+    {
+      path: '/persons/:id/notes',
+      name: 'person-notes',
+      component: PersonNotesView,
     },
   ],
 });

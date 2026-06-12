@@ -12,7 +12,7 @@ See [docs/architecture.md](docs/architecture.md),
 
 - **Person management** — create, edit, delete, paginated list (10/25/50/100 per page)
 - **Notes** — each person can have any number of free-text notes; add and soft-delete only
-- **Two UIs** — Vue 3 SPA at `/app/` and classic JSP UI at `/persons` (both support full person CRUD; notes management is currently JSP-only)
+- **Two UIs** — Vue 3 SPA at `/app/` and classic JSP UI at `/persons`, both feature-complete (person CRUD and notes)
 - **REST API** — full CRUD, RFC 9457 problem details, Swagger UI
 - **10 UI themes** — Light, Dark, Google, Claude, Facebook, Alaska Airlines, Reddit, Yahoo, Wikipedia, Amazon; persisted in `localStorage`
 - **142 seed records** with ~323 notes pre-loaded on every startup
@@ -79,7 +79,7 @@ mvn spring-boot:run -Dskip.frontend=true
 ## Testing
 
 ```bash
-mvn test -Dskip.frontend=true   # fast: skips Vite build, runs all 70 Java tests
+mvn test -Dskip.frontend=true   # fast: skips Vite build, runs all 71 Java tests
 mvn verify                       # full build including frontend
 ```
 
@@ -140,7 +140,7 @@ contact-manager/
 │   │   ├── router/                 # Vue Router (index.ts)
 │   │   ├── types/                  # TypeScript types (api.ts, person.ts)
 │   │   ├── utils/                  # personValidation.ts
-│   │   ├── views/                  # PersonListView, PersonFormView, PersonDeleteView
+│   │   ├── views/                  # PersonListView, PersonFormView, PersonDeleteView, PersonNotesView
 │   │   ├── App.vue                 # Root component (header + RouterView)
 │   │   └── main.ts                 # App bootstrap
 │   ├── index.html                  # SPA entry (pre-paint theme script)
@@ -159,7 +159,7 @@ contact-manager/
 │   │   │   ├── db/                 # schema.sql, data.sql (142 people + ~323 notes)
 │   │   │   └── static/app/         # Vite build output (gitignored, generated)
 │   │   └── webapp/WEB-INF/views/   # JSP templates, shared CSS/JS
-│   └── test/                       # 70 tests across 9 test classes
+│   └── test/                       # 71 tests across 10 test classes
 ├── docs/
 │   ├── architecture.md
 │   ├── current-status.md
