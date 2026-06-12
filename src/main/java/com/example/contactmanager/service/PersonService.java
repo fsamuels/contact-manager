@@ -2,6 +2,7 @@ package com.example.contactmanager.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
@@ -37,7 +38,7 @@ public interface PersonService {
      * @param id the person id
      * @return the person, or empty if not found
      */
-    Optional<Person> findPerson(long id);
+    Optional<Person> findPerson(UUID id);
 
     /**
      * Creates a new person record.
@@ -45,7 +46,7 @@ public interface PersonService {
      * @param person the validated person data; the id field is ignored
      * @return the generated id of the new record
      */
-    long createPerson(Person person);
+    UUID createPerson(Person person);
 
     /**
      * Updates an existing person record.
@@ -61,5 +62,5 @@ public interface PersonService {
      * @param id the person id
      * @throws PersonNotFoundException if the person no longer exists
      */
-    void deletePerson(long id);
+    void deletePerson(UUID id);
 }

@@ -1,5 +1,7 @@
 package com.example.contactmanager.web;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,7 +42,7 @@ class NoteControllerTest {
     @Autowired
     private NoteService noteService;
 
-    private long createSamplePerson() {
+    private UUID createSamplePerson() {
         Person person = new Person();
         person.setFirstName("Jane");
         person.setLastName("Doe");
@@ -54,7 +56,7 @@ class NoteControllerTest {
 
     @Test
     void notesPageRenders() throws Exception {
-        long personId = createSamplePerson();
+        UUID personId = createSamplePerson();
         noteService.addNote(personId, "Existing note.");
 
         mockMvc.perform(get("/persons/{personId}/notes", personId))
@@ -65,7 +67,7 @@ class NoteControllerTest {
 
     @Test
     void addNoteSavesAndRedirects() throws Exception {
-        long personId = createSamplePerson();
+        UUID personId = createSamplePerson();
 
         mockMvc.perform(post("/persons/{personId}/notes", personId)
                         .param("noteText", "A brand new note."))
@@ -78,7 +80,7 @@ class NoteControllerTest {
 
     @Test
     void blankNoteRedisplaysFormWithFieldError() throws Exception {
-        long personId = createSamplePerson();
+        UUID personId = createSamplePerson();
 
         mockMvc.perform(post("/persons/{personId}/notes", personId)
                         .param("noteText", "   "))
@@ -91,8 +93,8 @@ class NoteControllerTest {
 
     @Test
     void deleteNoteRedirectsAndHidesNote() throws Exception {
-        long personId = createSamplePerson();
-        long noteId = noteService.addNote(personId, "Doomed note.");
+        UUID personId = createSamplePerson();
+        UUID noteId = noteService.addNote(personId, "Doomed note.");
 
         mockMvc.perform(post("/persons/{personId}/notes/{noteId}/delete", personId, noteId))
                 .andExpect(status().is3xxRedirection())
@@ -104,7 +106,7 @@ class NoteControllerTest {
 
     @Test
     void missingPersonRedirectsToListingWithErrorMessage() throws Exception {
-        mockMvc.perform(get("/persons/{personId}/notes", 9999L))
+        mockMvc.perform(get("/persons/{personId}/notes", UUID.randomUUID()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/persons"))
                 .andExpect(flash().attributeExists("errorMessage"));
@@ -112,9 +114,9 @@ class NoteControllerTest {
 
     @Test
     void missingNoteRedirectsToNotesWithErrorMessage() throws Exception {
-        long personId = createSamplePerson();
+        UUID personId = createSamplePerson();
 
-        mockMvc.perform(post("/persons/{personId}/notes/{noteId}/delete", personId, 9999L))
+        mockMvc.perform(post("/persons/{personId}/notes/{noteId}/delete", personId, UUID.randomUUID()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/persons/" + personId + "/notes"))
                 .andExpect(flash().attributeExists("errorMessage"));

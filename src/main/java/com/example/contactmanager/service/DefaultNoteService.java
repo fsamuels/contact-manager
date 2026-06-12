@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,34 +37,34 @@ public class DefaultNoteService implements NoteService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Note> listNotes(long personId) {
+    public List<Note> listNotes(UUID personId) {
         requirePersonExists(personId);
         return noteRepository.findByPersonIdOrderByCreatedAtDescIdDesc(personId);
     }
 
     @Override
-    public long addNote(long personId, String noteText) {
+    public UUID addNote(UUID personId, String noteText) {
         Person person = personRepository.findById(personId)
                 .orElseThrow(() -> new PersonNotFoundException(personId));
         return noteRepository.save(new Note(person, noteText)).getId();
     }
 
     @Override
-    public void deleteNote(long personId, long noteId) {
+    public void deleteNote(UUID personId, UUID noteId) {
         Note note = noteRepository.findById(noteId)
-                .filter(found -> found.getPerson().getId() == personId)
+                .filter(found -> personId.equals(found.getPerson().getId()))
                 .orElseThrow(() -> new NoteNotFoundException(personId, noteId));
         noteRepository.delete(note);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Map<Long, Long> countNotes(Collection<Long> personIds) {
-        Map<Long, Long> counts = new HashMap<>();
+    public Map<UUID, Long> countNotes(Collection<UUID> personIds) {
+        Map<UUID, Long> counts = new HashMap<>();
         if (personIds.isEmpty()) {
             return counts;
         }
-        for (Long personId : personIds) {
+        for (UUID personId : personIds) {
             counts.put(personId, 0L);
         }
         for (NoteRepository.NoteCountByPerson row : noteRepository.countByPersonIds(personIds)) {
@@ -72,7 +73,7 @@ public class DefaultNoteService implements NoteService {
         return counts;
     }
 
-    private void requirePersonExists(long personId) {
+    private void requirePersonExists(UUID personId) {
         if (!personRepository.existsById(personId)) {
             throw new PersonNotFoundException(personId);
         }

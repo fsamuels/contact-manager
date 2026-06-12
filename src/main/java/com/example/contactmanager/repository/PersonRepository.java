@@ -1,5 +1,7 @@
 package com.example.contactmanager.repository;
 
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.contactmanager.domain.Person;
@@ -9,5 +11,5 @@ import com.example.contactmanager.domain.Person;
  * pagination are inherited from {@link JpaRepository}; query methods for
  * future relations can be added here as derived queries.
  */
-public interface PersonRepository extends JpaRepository<Person, Long> {
+public interface PersonRepository extends JpaRepository<Person, UUID> {
 }

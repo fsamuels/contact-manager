@@ -2,6 +2,7 @@ package com.example.contactmanager.repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +14,7 @@ import com.example.contactmanager.domain.Note;
  * Spring Data JPA repository for {@link Note} records. Soft-deleted notes are
  * filtered out of all queries by the entity's {@code @SoftDelete} mapping.
  */
-public interface NoteRepository extends JpaRepository<Note, Long> {
+public interface NoteRepository extends JpaRepository<Note, UUID> {
 
     /**
      * Lists a person's notes, newest first.
@@ -21,7 +22,7 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
      * @param personId the person id
      * @return the person's active notes
      */
-    List<Note> findByPersonIdOrderByCreatedAtDescIdDesc(long personId);
+    List<Note> findByPersonIdOrderByCreatedAtDescIdDesc(UUID personId);
 
     /**
      * Counts active notes per person for the given person ids. People with no
@@ -36,14 +37,14 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
             where n.person.id in :personIds
             group by n.person.id
             """)
-    List<NoteCountByPerson> countByPersonIds(@Param("personIds") Collection<Long> personIds);
+    List<NoteCountByPerson> countByPersonIds(@Param("personIds") Collection<UUID> personIds);
 
     /**
      * Projection for {@link #countByPersonIds(Collection)}.
      */
     interface NoteCountByPerson {
 
-        Long getPersonId();
+        UUID getPersonId();
 
         long getNoteCount();
     }

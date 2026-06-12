@@ -1,11 +1,12 @@
 package com.example.contactmanager.domain;
 
 import java.util.Objects;
+import java.util.UUID;
+
+import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -25,9 +26,9 @@ public class Person {
 
     /** Database identifier; {@code null} until the record is persisted. */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @UuidGenerator
     @Column(name = "person_id")
-    private Long id;
+    private UUID id;
 
     @NotBlank(message = "First name is required.")
     @Size(max = 30, message = "First name must be at most 30 characters.")
@@ -57,11 +58,11 @@ public class Person {
     @Pattern(regexp = "\\d{5}", message = "Zip code must be exactly 5 digits.")
     private String zipCode;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -146,7 +147,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{id=%d, firstName='%s', lastName='%s', emailAddress='%s'}"
+        return "Person{id=%s, firstName='%s', lastName='%s', emailAddress='%s'}"
                 .formatted(id, firstName, lastName, emailAddress);
     }
 }
