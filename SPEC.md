@@ -1,6 +1,6 @@
-# Sample Development Project Specification
+# AQUENT Sample Development Project Specification
 
-The following details are the high level project specifications for an interview sample project.
+The following details are the high level project specifications for the interview sample project.
 
 ## Platform and Framework Requirements
 
