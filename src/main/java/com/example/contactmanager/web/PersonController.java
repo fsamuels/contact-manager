@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.contactmanager.dao.PersonNotFoundException;
 import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
+import com.example.contactmanager.service.PersonNotFoundException;
 import com.example.contactmanager.service.PersonService;
 
 /**

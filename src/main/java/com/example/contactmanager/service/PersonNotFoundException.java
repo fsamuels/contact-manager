@@ -1,4 +1,4 @@
-package com.example.contactmanager.dao;
+package com.example.contactmanager.service;
 
 /**
  * Thrown when an operation references a person record that does not exist

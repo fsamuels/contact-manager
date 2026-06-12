@@ -8,7 +8,7 @@ interview-style sample development project specification.
 - Java 25
 - Maven
 - Spring Boot 3.5 (embedded Tomcat; Tomcat is required for Boot's JSP support)
-- Spring MVC 6 / Spring JDBC 6
+- Spring MVC 6 / Spring Data JPA (Hibernate)
 - H2 in-memory database
 - JSP (JSTL 3) views with HTML5, CSS, and jQuery
 - Jakarta Bean Validation (Hibernate Validator)
@@ -57,7 +57,7 @@ The WAR is produced at `target/contact-manager.war`.
 | Application entry point | `com.example.contactmanager.ContactManagerApplication` |
 | Web (controllers) | `com.example.contactmanager.web` |
 | Service | `com.example.contactmanager.service` |
-| Data access (Spring JDBC) | `com.example.contactmanager.dao` |
+| Data access (Spring Data JPA) | `com.example.contactmanager.repository` |
 | Domain model | `com.example.contactmanager.domain` |
 | Configuration | `src/main/resources/application.properties` |
 | Views (JSP) | `src/main/webapp/WEB-INF/views` |
