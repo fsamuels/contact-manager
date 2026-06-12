@@ -5,11 +5,10 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 
 import com.example.contactmanager.domain.Person;
-import com.example.contactmanager.testconfig.TestDbConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,10 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Integration tests for {@link JdbcPersonDao} against an embedded H2 database.
- * Each test runs in a rolled-back transaction.
+ * {@code @JdbcTest} provides the database and JDBC infrastructure and rolls
+ * back each test's transaction; the schema comes from the test
+ * {@code application.properties} (no sample data).
  */
-@SpringJUnitConfig(TestDbConfig.class)
-@Transactional
+@JdbcTest
+@Import(JdbcPersonDao.class)
 class JdbcPersonDaoTest {
 
     @Autowired
