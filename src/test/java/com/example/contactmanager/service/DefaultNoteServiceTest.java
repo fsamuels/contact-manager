@@ -66,7 +66,7 @@ class DefaultNoteServiceTest {
     @Test
     void deleteNoteIsSoftAndHidesTheNote() {
         UUID personId = createPerson("Jane", "Doe");
-        UUID noteId = noteService.addNote(personId, "To be deleted.");
+        UUID noteId = noteService.addNote(personId, "To be deleted.").getId();
 
         noteService.deleteNote(personId, noteId);
         entityManager.flush();
@@ -86,7 +86,7 @@ class DefaultNoteServiceTest {
     void deleteNoteBelongingToAnotherPersonThrowsNotFound() {
         UUID ownerId = createPerson("Jane", "Doe");
         UUID otherId = createPerson("John", "Smith");
-        UUID noteId = noteService.addNote(ownerId, "Jane's note.");
+        UUID noteId = noteService.addNote(ownerId, "Jane's note.").getId();
 
         assertThrows(NoteNotFoundException.class, () -> noteService.deleteNote(otherId, noteId));
     }
@@ -112,7 +112,7 @@ class DefaultNoteServiceTest {
     void countNotesExcludesSoftDeletedNotes() {
         UUID personId = createPerson("Jane", "Doe");
         noteService.addNote(personId, "Kept.");
-        UUID deletedId = noteService.addNote(personId, "Removed.");
+        UUID deletedId = noteService.addNote(personId, "Removed.").getId();
         noteService.deleteNote(personId, deletedId);
 
         assertEquals(1L, noteService.countNotes(List.of(personId)).get(personId));

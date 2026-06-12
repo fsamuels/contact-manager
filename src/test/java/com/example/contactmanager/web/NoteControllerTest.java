@@ -94,7 +94,7 @@ class NoteControllerTest {
     @Test
     void deleteNoteRedirectsAndHidesNote() throws Exception {
         UUID personId = createSamplePerson();
-        UUID noteId = noteService.addNote(personId, "Doomed note.");
+        UUID noteId = noteService.addNote(personId, "Doomed note.").getId();
 
         mockMvc.perform(post("/persons/{personId}/notes/{noteId}/delete", personId, noteId))
                 .andExpect(status().is3xxRedirection())

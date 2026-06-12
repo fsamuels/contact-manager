@@ -27,10 +27,10 @@ public interface NoteService {
      *
      * @param personId the person id
      * @param noteText the validated note text
-     * @return the generated id of the new note
+     * @return the newly created note
      * @throws PersonNotFoundException if the person does not exist
      */
-    UUID addNote(UUID personId, String noteText);
+    Note addNote(UUID personId, String noteText);
 
     /**
      * Soft-deletes a person's note. The row is retained with its deleted flag
