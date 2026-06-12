@@ -27,9 +27,9 @@ The database is in-memory: it is created (with a few sample records) on
 startup and discarded on shutdown.
 
 ## Building and testing
-
+ compile, run tests, package the WAR
 ```bash
-mvn verify        # compile, run tests, package the WAR
+mvn verify
 ```
 
 The WAR is produced at `target/contact-manager.war`.
