@@ -1,4 +1,4 @@
-<%-- Main page: listing of all people with edit/delete actions. --%>
+<%-- Main page: paginated listing of people with edit/delete actions. --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="pageTitle" value="People"/>
@@ -22,6 +22,17 @@
         <p class="no-results">No results found</p>
     </c:when>
     <c:otherwise>
+        <%-- Changing the size restarts at page 1, since the old page number is meaningless. --%>
+        <form class="page-size-form" method="get" action="<c:url value='/persons'/>">
+            <label for="page-size">Per page:</label>
+            <select id="page-size" name="size">
+                <c:forEach var="option" items="${pageSizeOptions}">
+                    <option value="${option}" ${option == personPage.pageSize ? 'selected' : ''}>${option}</option>
+                </c:forEach>
+            </select>
+            <button type="submit" class="page-size-apply">Apply</button>
+        </form>
+
         <table class="person-table">
             <thead>
             <tr>
@@ -45,7 +56,54 @@
             </c:forEach>
             </tbody>
         </table>
+
+        <c:if test="${personPage.totalPages > 1}">
+            <nav class="pagination" aria-label="Page navigation">
+                <c:choose>
+                    <c:when test="${personPage.first}">
+                        <span class="page-arrow page-disabled" aria-hidden="true">&larr;</span>
+                    </c:when>
+                    <c:otherwise>
+                        <c:url var="prevUrl" value="/persons">
+                            <c:param name="page" value="${personPage.pageNumber - 1}"/>
+                            <c:param name="size" value="${personPage.pageSize}"/>
+                        </c:url>
+                        <a class="page-arrow" href="${prevUrl}" aria-label="Previous page">&larr;</a>
+                    </c:otherwise>
+                </c:choose>
+
+                <c:forEach var="i" begin="1" end="${personPage.totalPages}">
+                    <c:choose>
+                        <c:when test="${i == personPage.pageNumber}">
+                            <span class="page-link page-current" aria-current="page">${i}</span>
+                        </c:when>
+                        <c:otherwise>
+                            <c:url var="pageUrl" value="/persons">
+                                <c:param name="page" value="${i}"/>
+                                <c:param name="size" value="${personPage.pageSize}"/>
+                            </c:url>
+                            <a class="page-link" href="${pageUrl}" aria-label="Page ${i}">${i}</a>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+
+                <c:choose>
+                    <c:when test="${personPage.last}">
+                        <span class="page-arrow page-disabled" aria-hidden="true">&rarr;</span>
+                    </c:when>
+                    <c:otherwise>
+                        <c:url var="nextUrl" value="/persons">
+                            <c:param name="page" value="${personPage.pageNumber + 1}"/>
+                            <c:param name="size" value="${personPage.pageSize}"/>
+                        </c:url>
+                        <a class="page-arrow" href="${nextUrl}" aria-label="Next page">&rarr;</a>
+                    </c:otherwise>
+                </c:choose>
+            </nav>
+        </c:if>
     </c:otherwise>
 </c:choose>
+
+<script src="<c:url value='/resources/js/person-list.js'/>"></script>
 
 <%@ include file="../common/footer.jspf" %>

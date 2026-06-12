@@ -73,6 +73,36 @@ class JdbcPersonDaoTest {
     }
 
     @Test
+    void countReflectsNumberOfRecords() {
+        assertEquals(0, personDao.count());
+        personDao.insert(newPerson("Jane", "Doe"));
+        personDao.insert(newPerson("John", "Smith"));
+        assertEquals(2, personDao.count());
+    }
+
+    @Test
+    void findPageReturnsRequestedSliceInOrder() {
+        personDao.insert(newPerson("Zoe", "Adams"));
+        personDao.insert(newPerson("Amy", "Baker"));
+        personDao.insert(newPerson("Cal", "Carter"));
+
+        List<Person> firstPage = personDao.findPage(0, 2);
+        assertEquals(2, firstPage.size());
+        assertEquals("Adams", firstPage.get(0).getLastName());
+        assertEquals("Baker", firstPage.get(1).getLastName());
+
+        List<Person> secondPage = personDao.findPage(2, 2);
+        assertEquals(1, secondPage.size());
+        assertEquals("Carter", secondPage.get(0).getLastName());
+    }
+
+    @Test
+    void findPagePastTheEndReturnsEmptyList() {
+        personDao.insert(newPerson("Jane", "Doe"));
+        assertTrue(personDao.findPage(10, 10).isEmpty());
+    }
+
+    @Test
     void updateModifiesExistingRecord() {
         long id = personDao.insert(newPerson("Jane", "Doe"));
 

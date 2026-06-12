@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.contactmanager.dao.PersonDao;
+import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
 
 /**
@@ -31,6 +32,19 @@ public class DefaultPersonService implements PersonService {
     @Transactional(readOnly = true)
     public List<Person> listPeople() {
         return personDao.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Person> listPeople(int pageNumber, int pageSize) {
+        if (pageSize < 1) {
+            throw new IllegalArgumentException("pageSize must be positive: " + pageSize);
+        }
+        long totalItems = personDao.count();
+        int totalPages = (int) Math.max(1, (totalItems + pageSize - 1) / pageSize);
+        int page = Math.min(Math.max(pageNumber, 1), totalPages);
+        List<Person> items = personDao.findPage((long) (page - 1) * pageSize, pageSize);
+        return new Page<>(items, page, pageSize, totalItems);
     }
 
     @Override

@@ -18,6 +18,23 @@ public interface PersonDao {
     List<Person> findAll();
 
     /**
+     * Retrieves a contiguous slice of person records, ordered by last name,
+     * first name, and id.
+     *
+     * @param offset the number of records to skip; must be non-negative
+     * @param limit  the maximum number of records to return; must be positive
+     * @return the requested slice, or an empty list if the offset is past the end
+     */
+    List<Person> findPage(long offset, int limit);
+
+    /**
+     * Counts all person records.
+     *
+     * @return the total number of persons in the system
+     */
+    long count();
+
+    /**
      * Retrieves a single person by id.
      *
      * @param id the person id

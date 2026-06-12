@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.contactmanager.dao.PersonNotFoundException;
+import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
 
 /**
@@ -17,6 +18,19 @@ public interface PersonService {
      * @return all persons ordered by last name then first name
      */
     List<Person> listPeople();
+
+    /**
+     * Lists a single page of persons.
+     *
+     * <p>The requested page number is clamped to the valid range, so a value
+     * below 1 yields the first page and a value past the end yields the last
+     * page.</p>
+     *
+     * @param pageNumber the requested 1-based page number
+     * @param pageSize   the maximum number of persons per page; must be positive
+     * @return the requested page, ordered by last name then first name
+     */
+    Page<Person> listPeople(int pageNumber, int pageSize);
 
     /**
      * Finds a single person by id.

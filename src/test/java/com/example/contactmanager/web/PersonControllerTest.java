@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.example.contactmanager.config.WebMvcConfig;
+import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
 import com.example.contactmanager.service.PersonService;
 import com.example.contactmanager.testconfig.TestDbConfig;
@@ -71,6 +72,65 @@ class PersonControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("person/list"))
                 .andExpect(model().attributeExists("people"));
+    }
+
+    private void createPeople(int count) {
+        for (int i = 0; i < count; i++) {
+            createSamplePerson();
+        }
+    }
+
+    private Page<?> requestListPage(String url) throws Exception {
+        return (Page<?>) mockMvc.perform(get(url))
+                .andExpect(status().isOk())
+                .andExpect(view().name("person/list"))
+                .andReturn()
+                .getModelAndView()
+                .getModel()
+                .get("personPage");
+    }
+
+    @Test
+    void listingDefaultsToTenPerPage() throws Exception {
+        createPeople(11);
+        Page<?> page = requestListPage("/persons");
+        assertEquals(10, page.getItems().size());
+        assertEquals(1, page.getPageNumber());
+        assertEquals(10, page.getPageSize());
+        assertEquals(11, page.getTotalItems());
+        assertEquals(2, page.getTotalPages());
+    }
+
+    @Test
+    void listingSecondPageShowsRemainder() throws Exception {
+        createPeople(11);
+        Page<?> page = requestListPage("/persons?page=2");
+        assertEquals(1, page.getItems().size());
+        assertEquals(2, page.getPageNumber());
+    }
+
+    @Test
+    void listingHonorsOfferedPageSizes() throws Exception {
+        createPeople(11);
+        Page<?> page = requestListPage("/persons?size=25");
+        assertEquals(11, page.getItems().size());
+        assertEquals(25, page.getPageSize());
+        assertEquals(1, page.getTotalPages());
+    }
+
+    @Test
+    void listingFallsBackToDefaultSizeForUnsupportedValues() throws Exception {
+        createPeople(11);
+        Page<?> page = requestListPage("/persons?size=17");
+        assertEquals(10, page.getPageSize());
+        assertEquals(10, page.getItems().size());
+    }
+
+    @Test
+    void listingClampsOutOfRangePageNumbers() throws Exception {
+        createPeople(11);
+        assertEquals(2, requestListPage("/persons?page=99").getPageNumber());
+        assertEquals(1, requestListPage("/persons?page=0").getPageNumber());
     }
 
     @Test

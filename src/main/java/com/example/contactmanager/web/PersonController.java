@@ -1,5 +1,7 @@
 package com.example.contactmanager.web;
 
+import java.util.List;
+
 import jakarta.validation.Valid;
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -13,9 +15,11 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.contactmanager.dao.PersonNotFoundException;
+import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
 import com.example.contactmanager.service.PersonService;
 
@@ -30,6 +34,10 @@ public class PersonController {
     private static final String FORM_VIEW = "person/form";
     private static final String DELETE_VIEW = "person/delete-confirm";
     private static final String REDIRECT_TO_LIST = "redirect:/persons";
+
+    /** Page sizes the listing page offers; requests for any other size fall back to the default. */
+    private static final List<Integer> PAGE_SIZE_OPTIONS = List.of(10, 25, 50, 100);
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     private final PersonService personService;
 
@@ -55,11 +63,24 @@ public class PersonController {
     }
 
     /**
-     * Displays the main page: the listing of all people.
+     * Displays the main page: a paginated listing of people.
+     *
+     * @param page the requested 1-based page number; out-of-range values are
+     *             clamped to the valid range
+     * @param size the requested page size; values other than the offered
+     *             options fall back to the default of {@value #DEFAULT_PAGE_SIZE}
      */
     @GetMapping("/persons")
-    public String list(Model model) {
-        model.addAttribute("people", personService.listPeople());
+    public String list(@RequestParam(name = "page", defaultValue = "1") int page,
+                       @RequestParam(name = "size", defaultValue = "10") int size,
+                       Model model) {
+        if (!PAGE_SIZE_OPTIONS.contains(size)) {
+            size = DEFAULT_PAGE_SIZE;
+        }
+        Page<Person> personPage = personService.listPeople(page, size);
+        model.addAttribute("personPage", personPage);
+        model.addAttribute("people", personPage.getItems());
+        model.addAttribute("pageSizeOptions", PAGE_SIZE_OPTIONS);
         return LIST_VIEW;
     }
 

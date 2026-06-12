@@ -27,6 +27,15 @@ public class JdbcPersonDao implements PersonDao {
             ORDER BY last_name, first_name, person_id
             """;
 
+    private static final String SELECT_PAGE = """
+            SELECT person_id, first_name, last_name, email_address, street_address, city, state, zip_code
+            FROM person
+            ORDER BY last_name, first_name, person_id
+            OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
+            """;
+
+    private static final String COUNT_ALL = "SELECT COUNT(*) FROM person";
+
     private static final String SELECT_BY_ID = """
             SELECT person_id, first_name, last_name, email_address, street_address, city, state, zip_code
             FROM person
@@ -66,6 +75,20 @@ public class JdbcPersonDao implements PersonDao {
     @Override
     public List<Person> findAll() {
         return jdbcTemplate.query(SELECT_ALL, PERSON_ROW_MAPPER);
+    }
+
+    @Override
+    public List<Person> findPage(long offset, int limit) {
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("offset", offset)
+                .addValue("limit", limit);
+        return jdbcTemplate.query(SELECT_PAGE, params, PERSON_ROW_MAPPER);
+    }
+
+    @Override
+    public long count() {
+        Long count = jdbcTemplate.queryForObject(COUNT_ALL, new MapSqlParameterSource(), Long.class);
+        return count != null ? count : 0L;
     }
 
     @Override
