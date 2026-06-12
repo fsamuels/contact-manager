@@ -8,7 +8,7 @@ interview-style sample development project specification.
 - Java 25
 - Maven
 - Spring Boot 3.5 (embedded Tomcat; Tomcat is required for Boot's JSP support)
-- Spring MVC 6 / Spring JDBC 6
+- Spring MVC 6 / Spring Data JPA (Hibernate)
 - H2 in-memory database
 - JSP (JSTL 3) views with HTML5, CSS, and jQuery
 - Jakarta Bean Validation (Hibernate Validator)
@@ -29,8 +29,17 @@ mvn package && java -jar target/contact-manager.war
 
 Then open <http://localhost:8080/>.
 
-The database is in-memory: it is created (with a few sample records) on
+The database is in-memory: it is created (with sample people and notes) on
 startup and discarded on shutdown.
+
+## Notes
+
+Each person can have any number of free-text notes, managed from the
+note icon in the listing's Actions column (the hover text shows the current
+note count). Notes can only be added and deleted — deletion is a soft delete
+(Hibernate `@SoftDelete`): the row is kept with a `deleted` flag and filtered
+out of every query. Action links use Font Awesome icons with accessible
+labels.
 
 ## UI themes
 
@@ -57,7 +66,7 @@ The WAR is produced at `target/contact-manager.war`.
 | Application entry point | `com.example.contactmanager.ContactManagerApplication` |
 | Web (controllers) | `com.example.contactmanager.web` |
 | Service | `com.example.contactmanager.service` |
-| Data access (Spring JDBC) | `com.example.contactmanager.dao` |
+| Data access (Spring Data JPA) | `com.example.contactmanager.repository` |
 | Domain model | `com.example.contactmanager.domain` |
 | Configuration | `src/main/resources/application.properties` |
 | Views (JSP) | `src/main/webapp/WEB-INF/views` |

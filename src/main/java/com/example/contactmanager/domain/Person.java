@@ -2,18 +2,31 @@ package com.example.contactmanager.domain;
 
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
- * A person record in the contact manager. Also serves as the web form backing
- * object, carrying the Bean Validation rules defined by the project
- * specification.
+ * A person record in the contact manager, mapped to the {@code person} table.
+ * Also serves as the web form backing object, carrying the Bean Validation
+ * rules defined by the project specification. Camel-case fields map to the
+ * snake_case columns via Hibernate's default naming strategy; only the id
+ * column needs an explicit name.
  */
+@Entity
+@Table(name = "person")
 public class Person {
 
     /** Database identifier; {@code null} until the record is persisted. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "person_id")
     private Long id;
 
     @NotBlank(message = "First name is required.")

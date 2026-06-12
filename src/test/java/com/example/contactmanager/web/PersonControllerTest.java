@@ -64,7 +64,7 @@ class PersonControllerTest {
         mockMvc.perform(get("/persons"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("person/list"))
-                .andExpect(model().attributeExists("people"));
+                .andExpect(model().attributeExists("people", "noteCounts"));
     }
 
     private void createPeople(int count) {

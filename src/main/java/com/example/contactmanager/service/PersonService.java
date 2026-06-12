@@ -3,7 +3,6 @@ package com.example.contactmanager.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.contactmanager.dao.PersonNotFoundException;
 import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
 
