@@ -42,7 +42,7 @@ public class DefaultPersonService implements PersonService {
         }
         long totalItems = personDao.count();
         int totalPages = (int) Math.max(1, (totalItems + pageSize - 1) / pageSize);
-        int page = Math.min(Math.max(pageNumber, 1), totalPages);
+        int page = Math.clamp(pageNumber, 1, totalPages);
         List<Person> items = personDao.findPage((long) (page - 1) * pageSize, pageSize);
         return new Page<>(items, page, pageSize, totalItems);
     }

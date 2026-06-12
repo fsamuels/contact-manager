@@ -5,7 +5,7 @@ interview-style sample development project specification.
 
 ## Stack
 
-- Java 17+ (compiled with `--release 17`)
+- Java 25 (compiled with `--release 25`, the newest class-file version Spring 6.2's bundled ASM can parse)
 - Maven
 - Jetty 12 (EE10) via `jetty-ee10-maven-plugin`
 - Spring MVC 6 / Spring JDBC 6
@@ -15,7 +15,7 @@ interview-style sample development project specification.
 
 ## Running locally
 
-Requires JDK 17 or newer and Maven 3.9+.
+Requires JDK 25 or newer and Maven 3.9+.
 
 ```bash
 mvn jetty:run
