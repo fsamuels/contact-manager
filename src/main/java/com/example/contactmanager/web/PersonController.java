@@ -1,6 +1,7 @@
 package com.example.contactmanager.web;
 
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 
@@ -124,7 +125,7 @@ public class PersonController {
      * Displays the form for editing an existing person.
      */
     @GetMapping("/persons/{id}/edit")
-    public String editForm(@PathVariable("id") long id, Model model) {
+    public String editForm(@PathVariable("id") UUID id, Model model) {
         Person person = personService.findPerson(id).orElseThrow(() -> new PersonNotFoundException(id));
         model.addAttribute("person", person);
         model.addAttribute("formTitle", "Edit Person");
@@ -137,7 +138,7 @@ public class PersonController {
      * and the user returns to the listing.
      */
     @PostMapping("/persons/{id}/edit")
-    public String edit(@PathVariable("id") long id,
+    public String edit(@PathVariable("id") UUID id,
                        @Valid @ModelAttribute("person") Person person,
                        BindingResult bindingResult,
                        Model model,
@@ -157,7 +158,7 @@ public class PersonController {
      * Displays the delete confirmation page for a person.
      */
     @GetMapping("/persons/{id}/delete")
-    public String deleteConfirm(@PathVariable("id") long id, Model model) {
+    public String deleteConfirm(@PathVariable("id") UUID id, Model model) {
         Person person = personService.findPerson(id).orElseThrow(() -> new PersonNotFoundException(id));
         model.addAttribute("person", person);
         return DELETE_VIEW;
@@ -167,7 +168,7 @@ public class PersonController {
      * Deletes the person after confirmation and returns to the listing.
      */
     @PostMapping("/persons/{id}/delete")
-    public String delete(@PathVariable("id") long id, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable("id") UUID id, RedirectAttributes redirectAttributes) {
         Person person = personService.findPerson(id).orElseThrow(() -> new PersonNotFoundException(id));
         personService.deletePerson(id);
         redirectAttributes.addFlashAttribute("successMessage",

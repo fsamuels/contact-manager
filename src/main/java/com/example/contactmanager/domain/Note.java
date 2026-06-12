@@ -1,14 +1,14 @@
 package com.example.contactmanager.domain;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -30,9 +30,9 @@ public class Note {
 
     /** Database identifier; {@code null} until the record is persisted. */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @UuidGenerator
     @Column(name = "note_id")
-    private Long id;
+    private UUID id;
 
     /** The person this note belongs to. */
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -59,7 +59,7 @@ public class Note {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -77,6 +77,6 @@ public class Note {
 
     @Override
     public String toString() {
-        return "Note{id=%d, createdAt=%s}".formatted(id, createdAt);
+        return "Note{id=%s, createdAt=%s}".formatted(id, createdAt);
     }
 }

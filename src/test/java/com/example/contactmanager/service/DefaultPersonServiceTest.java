@@ -1,5 +1,7 @@
 package com.example.contactmanager.service;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -38,7 +40,7 @@ class DefaultPersonServiceTest {
 
     @Test
     void createPersonAssignsIdAndNormalizesState() {
-        long id = personService.createPerson(newPerson("Jane", "Doe"));
+        UUID id = personService.createPerson(newPerson("Jane", "Doe"));
         Person saved = personService.findPerson(id).orElseThrow();
         assertEquals("MA", saved.getState(), "State abbreviation is normalized to uppercase");
     }
@@ -66,7 +68,7 @@ class DefaultPersonServiceTest {
 
     @Test
     void updatePersonModifiesExistingRecord() {
-        long id = personService.createPerson(newPerson("Jane", "Doe"));
+        UUID id = personService.createPerson(newPerson("Jane", "Doe"));
 
         Person updated = newPerson("Janet", "Doe");
         updated.setId(id);
@@ -78,19 +80,19 @@ class DefaultPersonServiceTest {
     @Test
     void updateMissingPersonThrowsNotFound() {
         Person person = newPerson("Jane", "Doe");
-        person.setId(9999L);
+        person.setId(UUID.randomUUID());
         assertThrows(PersonNotFoundException.class, () -> personService.updatePerson(person));
     }
 
     @Test
     void deletePersonRemovesRecord() {
-        long id = personService.createPerson(newPerson("Jane", "Doe"));
+        UUID id = personService.createPerson(newPerson("Jane", "Doe"));
         personService.deletePerson(id);
         assertTrue(personService.findPerson(id).isEmpty());
     }
 
     @Test
     void deleteMissingPersonThrowsNotFound() {
-        assertThrows(PersonNotFoundException.class, () -> personService.deletePerson(9999L));
+        assertThrows(PersonNotFoundException.class, () -> personService.deletePerson(UUID.randomUUID()));
     }
 }

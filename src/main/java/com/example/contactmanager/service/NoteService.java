@@ -3,6 +3,7 @@ package com.example.contactmanager.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.example.contactmanager.domain.Note;
 
@@ -19,7 +20,7 @@ public interface NoteService {
      * @return the person's notes
      * @throws PersonNotFoundException if the person does not exist
      */
-    List<Note> listNotes(long personId);
+    List<Note> listNotes(UUID personId);
 
     /**
      * Adds a note to a person.
@@ -29,7 +30,7 @@ public interface NoteService {
      * @return the generated id of the new note
      * @throws PersonNotFoundException if the person does not exist
      */
-    long addNote(long personId, String noteText);
+    UUID addNote(UUID personId, String noteText);
 
     /**
      * Soft-deletes a person's note. The row is retained with its deleted flag
@@ -40,7 +41,7 @@ public interface NoteService {
      * @throws NoteNotFoundException if the note does not exist or belongs to
      *                               a different person
      */
-    void deleteNote(long personId, long noteId);
+    void deleteNote(UUID personId, UUID noteId);
 
     /**
      * Counts active notes for each of the given people.
@@ -48,5 +49,5 @@ public interface NoteService {
      * @param personIds the person ids
      * @return a map with one entry per requested id (0 for people without notes)
      */
-    Map<Long, Long> countNotes(Collection<Long> personIds);
+    Map<UUID, Long> countNotes(Collection<UUID> personIds);
 }

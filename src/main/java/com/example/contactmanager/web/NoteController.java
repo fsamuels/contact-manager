@@ -1,5 +1,7 @@
 package com.example.contactmanager.web;
 
+import java.util.UUID;
+
 import jakarta.validation.Valid;
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -55,7 +57,7 @@ public class NoteController {
      * Displays a person's notes with the add-note form.
      */
     @GetMapping
-    public String notes(@PathVariable("personId") long personId, Model model) {
+    public String notes(@PathVariable("personId") UUID personId, Model model) {
         populateNotesModel(personId, model);
         model.addAttribute("noteForm", new NoteForm());
         return NOTES_VIEW;
@@ -67,7 +69,7 @@ public class NoteController {
      * and the user returns to the person's notes.
      */
     @PostMapping
-    public String add(@PathVariable("personId") long personId,
+    public String add(@PathVariable("personId") UUID personId,
                       @Valid @ModelAttribute("noteForm") NoteForm noteForm,
                       BindingResult bindingResult,
                       Model model,
@@ -85,8 +87,8 @@ public class NoteController {
      * Soft-deletes a note and returns to the person's notes.
      */
     @PostMapping("/{noteId}/delete")
-    public String delete(@PathVariable("personId") long personId,
-                         @PathVariable("noteId") long noteId,
+    public String delete(@PathVariable("personId") UUID personId,
+                         @PathVariable("noteId") UUID noteId,
                          RedirectAttributes redirectAttributes) {
         noteService.deleteNote(personId, noteId);
         redirectAttributes.addFlashAttribute("successMessage", "Deleted note");
@@ -115,14 +117,14 @@ public class NoteController {
         return redirectToNotes(ex.getPersonId());
     }
 
-    private void populateNotesModel(long personId, Model model) {
+    private void populateNotesModel(UUID personId, Model model) {
         Person person = personService.findPerson(personId)
                 .orElseThrow(() -> new PersonNotFoundException(personId));
         model.addAttribute("person", person);
         model.addAttribute("notes", noteService.listNotes(personId));
     }
 
-    private static String redirectToNotes(long personId) {
+    private static String redirectToNotes(UUID personId) {
         return "redirect:/persons/" + personId + "/notes";
     }
 }

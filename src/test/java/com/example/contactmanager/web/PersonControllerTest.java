@@ -1,5 +1,7 @@
 package com.example.contactmanager.web;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,7 +41,7 @@ class PersonControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private long createSamplePerson() {
+    private UUID createSamplePerson() {
         Person person = new Person();
         person.setFirstName("Jane");
         person.setLastName("Doe");
@@ -172,7 +174,7 @@ class PersonControllerTest {
 
     @Test
     void editFormRendersExistingPerson() throws Exception {
-        long id = createSamplePerson();
+        UUID id = createSamplePerson();
         mockMvc.perform(get("/persons/{id}/edit", id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("person/form"))
@@ -181,7 +183,7 @@ class PersonControllerTest {
 
     @Test
     void validEditUpdatesAndRedirectsToListing() throws Exception {
-        long id = createSamplePerson();
+        UUID id = createSamplePerson();
         mockMvc.perform(post("/persons/{id}/edit", id)
                         .param("firstName", "Janet")
                         .param("lastName", "Doe")
@@ -198,7 +200,7 @@ class PersonControllerTest {
 
     @Test
     void deleteConfirmationPageRenders() throws Exception {
-        long id = createSamplePerson();
+        UUID id = createSamplePerson();
         mockMvc.perform(get("/persons/{id}/delete", id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("person/delete-confirm"))
@@ -207,7 +209,7 @@ class PersonControllerTest {
 
     @Test
     void deleteRemovesPersonAndRedirectsToListing() throws Exception {
-        long id = createSamplePerson();
+        UUID id = createSamplePerson();
         mockMvc.perform(post("/persons/{id}/delete", id))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/persons"));
@@ -217,7 +219,7 @@ class PersonControllerTest {
 
     @Test
     void missingPersonRedirectsToListingWithErrorMessage() throws Exception {
-        mockMvc.perform(get("/persons/{id}/edit", 9999L))
+        mockMvc.perform(get("/persons/{id}/edit", UUID.randomUUID()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/persons"))
                 .andExpect(flash().attributeExists("errorMessage"));

@@ -1,5 +1,7 @@
 package com.example.contactmanager.service;
 
+import java.util.UUID;
+
 /**
  * Thrown when an operation references a note that does not exist for the
  * given person (it may have been deleted in another session, or belongs to a
@@ -9,13 +11,13 @@ public class NoteNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    private final long personId;
+    private final UUID personId;
 
     /**
      * @param personId the person the note was requested for
      * @param noteId   the identifier that could not be found
      */
-    public NoteNotFoundException(long personId, long noteId) {
+    public NoteNotFoundException(UUID personId, UUID noteId) {
         super("No note found with id " + noteId);
         this.personId = personId;
     }
@@ -23,7 +25,7 @@ public class NoteNotFoundException extends RuntimeException {
     /**
      * @return the person the note was requested for
      */
-    public long getPersonId() {
+    public UUID getPersonId() {
         return personId;
     }
 }

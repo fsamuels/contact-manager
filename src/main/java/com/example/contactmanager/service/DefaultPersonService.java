@@ -3,6 +3,7 @@ package com.example.contactmanager.service;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -56,12 +57,12 @@ public class DefaultPersonService implements PersonService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Person> findPerson(long id) {
+    public Optional<Person> findPerson(UUID id) {
         return personRepository.findById(id);
     }
 
     @Override
-    public long createPerson(Person person) {
+    public UUID createPerson(Person person) {
         normalize(person);
         return personRepository.save(person).getId();
     }
@@ -76,7 +77,7 @@ public class DefaultPersonService implements PersonService {
     }
 
     @Override
-    public void deletePerson(long id) {
+    public void deletePerson(UUID id) {
         if (!personRepository.existsById(id)) {
             throw new PersonNotFoundException(id);
         }
