@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
+import com.example.contactmanager.service.NoteService;
 import com.example.contactmanager.service.PersonNotFoundException;
 import com.example.contactmanager.service.PersonService;
 
@@ -40,12 +41,15 @@ public class PersonController {
     private static final int DEFAULT_PAGE_SIZE = 10;
 
     private final PersonService personService;
+    private final NoteService noteService;
 
     /**
      * @param personService the person service
+     * @param noteService   the note service, for note counts on the listing
      */
-    public PersonController(PersonService personService) {
+    public PersonController(PersonService personService, NoteService noteService) {
         this.personService = personService;
+        this.noteService = noteService;
     }
 
     @InitBinder
@@ -81,6 +85,8 @@ public class PersonController {
         model.addAttribute("personPage", personPage);
         model.addAttribute("people", personPage.getItems());
         model.addAttribute("pageSizeOptions", PAGE_SIZE_OPTIONS);
+        model.addAttribute("noteCounts",
+                noteService.countNotes(personPage.getItems().stream().map(Person::getId).toList()));
         return LIST_VIEW;
     }
 

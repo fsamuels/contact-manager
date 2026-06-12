@@ -1,6 +1,7 @@
-<%-- Main page: paginated listing of people with edit/delete actions. --%>
+<%-- Main page: paginated listing of people with notes/edit/delete actions. --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="pageTitle" value="People"/>
 <%@ include file="../common/header.jspf" %>
 
@@ -49,8 +50,23 @@
                     <td><c:out value="${person.lastName}"/></td>
                     <td><c:out value="${person.emailAddress}"/></td>
                     <td class="actions">
-                        <a href="<c:url value='/persons/${person.id}/edit'/>">Edit</a>
-                        <a href="<c:url value='/persons/${person.id}/delete'/>">Delete</a>
+                        <c:set var="personName"
+                               value="${fn:escapeXml(person.firstName)} ${fn:escapeXml(person.lastName)}"/>
+                        <c:set var="noteCount"
+                               value="${empty noteCounts[person.id] ? 0 : noteCounts[person.id]}"/>
+                        <a class="icon-link" href="<c:url value='/persons/${person.id}/notes'/>"
+                           title="Notes for ${personName} (${noteCount})"
+                           aria-label="Notes for ${personName} (${noteCount})">
+                            <i class="fa-solid fa-note-sticky" aria-hidden="true"></i>
+                        </a>
+                        <a class="icon-link" href="<c:url value='/persons/${person.id}/edit'/>"
+                           title="Edit ${personName}" aria-label="Edit ${personName}">
+                            <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                        </a>
+                        <a class="icon-link" href="<c:url value='/persons/${person.id}/delete'/>"
+                           title="Delete ${personName}" aria-label="Delete ${personName}">
+                            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        </a>
                     </td>
                 </tr>
             </c:forEach>
