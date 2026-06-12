@@ -7,6 +7,13 @@
 
 <h2>People</h2>
 
+<p class="new-experience-banner">
+    <a class="new-experience-link" href="<c:url value='/app/'/>">
+        <i class="fa-solid fa-wand-magic-sparkles new-experience-icon" aria-hidden="true"></i>
+        Try the new experience
+    </a>
+</p>
+
 <c:if test="${not empty successMessage}">
     <p class="flash flash-success"><c:out value="${successMessage}"/></p>
 </c:if>

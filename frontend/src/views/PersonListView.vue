@@ -68,6 +68,13 @@ watch([page, size], loadPeople, { immediate: true });
   <div>
     <h2>People</h2>
 
+    <p class="classic-ui-link">
+      <a href="/persons">
+        <i class="fa-solid fa-hourglass-half" aria-hidden="true"></i>
+        Return to the old ways
+      </a>
+    </p>
+
     <p v-if="error" class="flash flash-error">Could not load people: {{ error }}</p>
 
     <p>

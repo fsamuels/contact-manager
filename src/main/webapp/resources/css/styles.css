@@ -477,6 +477,44 @@ a {
     padding: 0 1.5rem;
 }
 
+.new-experience-banner {
+    margin: 0 0 1rem;
+}
+
+.new-experience-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.new-experience-icon {
+    font-size: 1.15rem;
+    background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.classic-ui-link {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+}
+
+.classic-ui-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.classic-ui-link a:hover {
+    color: var(--link);
+    text-decoration: underline;
+}
+
 .flash {
     padding: 0.5rem 0.75rem;
     border-radius: var(--radius);
