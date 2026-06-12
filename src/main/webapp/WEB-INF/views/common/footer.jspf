@@ -1,0 +1,4 @@
+<%-- Shared page footer closing the layout opened in header.jspf. --%>
+</main>
+</body>
+</html>

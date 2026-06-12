@@ -1,0 +1,128 @@
+/* Minimal styling for the contact manager. */
+
+body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    color: #222;
+    background: #fafafa;
+}
+
+.site-header {
+    background: #2c3e50;
+    padding: 0.75rem 1.5rem;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.site-header a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.content {
+    max-width: 48rem;
+    margin: 1.5rem auto;
+    padding: 0 1.5rem;
+}
+
+.flash {
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+}
+
+.flash-success {
+    background: #e6f4ea;
+    border: 1px solid #b7dfc2;
+    color: #1e6133;
+}
+
+.flash-error {
+    background: #fdecea;
+    border: 1px solid #f5c6c2;
+    color: #8a1f17;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid #2c3e50;
+    border-radius: 4px;
+    background: #34495e;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.button-danger {
+    background: #b03a2e;
+    border-color: #922b21;
+}
+
+.person-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.person-table th,
+.person-table td {
+    border: 1px solid #ddd;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+
+.person-table th {
+    background: #ecf0f1;
+}
+
+.person-table .actions a {
+    margin-right: 0.75rem;
+}
+
+.no-results {
+    font-style: italic;
+    color: #555;
+}
+
+.person-form .field {
+    margin-bottom: 1rem;
+}
+
+.person-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.person-form input {
+    padding: 0.4rem;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 24rem;
+    box-sizing: border-box;
+}
+
+.person-form input.input-invalid {
+    border-color: #b03a2e;
+}
+
+.field-error {
+    display: block;
+    color: #b03a2e;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.form-actions {
+    margin-top: 1.5rem;
+}
+
+.form-actions a,
+.delete-form a {
+    margin-left: 0.75rem;
+}
