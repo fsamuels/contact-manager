@@ -1,0 +1,7 @@
+target/
+.DS_Store
+
+# Frontend build tooling and output (rebuilt by frontend-maven-plugin)
+frontend/node/
+frontend/node_modules/
+src/main/resources/static/app/

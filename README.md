@@ -32,6 +32,17 @@ Then open <http://localhost:8080/>.
 The database is in-memory: it is created (with sample people and notes) on
 startup and discarded on shutdown.
 
+## Vue frontend (work in progress)
+
+A Vue 3 + TypeScript + Vite SPA lives in `frontend/` and is served by Spring
+Boot at `/app/`. The `frontend-maven-plugin` installs Node, runs the Vite
+build during `mvn package`, and bundles the output into the artifact — one
+deployable, same as before. Skip the frontend build with
+`-Dskip.frontend=true`. For frontend development with hot reload, run the
+backend normally and `npm run dev` inside `frontend/` (API calls are proxied
+to `localhost:8080`). Currently a hello-world page; the full UI migration is
+planned.
+
 ## REST API
 
 A JSON API mirrors the web UI's functionality, sharing the same service
