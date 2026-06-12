@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { fetchPersons } from '../api/persons';
+import ClassicUiLink from '../components/ClassicUiLink.vue';
 import {
   DEFAULT_PAGE_SIZE,
   PAGE_SIZE_OPTIONS,
@@ -19,6 +20,7 @@ const people = ref<PersonDto[]>([]);
 const personPage = ref<PageDto<PersonDto> | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
+const flashSuccess = ref<string | null>(null);
 
 function parsePositiveInt(value: unknown, fallback: number): number {
   const parsed = Number.parseInt(String(value ?? ''), 10);
@@ -62,6 +64,15 @@ function onPageSizeChange(event: Event) {
 }
 
 watch([page, size], loadPeople, { immediate: true });
+
+watch(
+  () => route.fullPath,
+  () => {
+    const state = history.state as { flashSuccess?: string } | null;
+    flashSuccess.value = state?.flashSuccess ?? null;
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -69,16 +80,14 @@ watch([page, size], loadPeople, { immediate: true });
     <h2>People</h2>
 
     <p class="classic-ui-link">
-      <a href="/persons">
-        <i class="fa-solid fa-hourglass-half" aria-hidden="true"></i>
-        Return to the old ways
-      </a>
+      <ClassicUiLink />
     </p>
 
+    <p v-if="flashSuccess" class="flash flash-success">{{ flashSuccess }}</p>
     <p v-if="error" class="flash flash-error">Could not load people: {{ error }}</p>
 
     <p>
-      <a class="button" href="/persons/new">Create Person</a>
+      <RouterLink class="button" :to="{ name: 'person-create' }">Create Person</RouterLink>
     </p>
 
     <p v-if="loading" class="loading">Loading&hellip;</p>
@@ -120,22 +129,22 @@ watch([page, size], loadPeople, { immediate: true });
               >
                 <i class="fa-solid fa-note-sticky" aria-hidden="true"></i>
               </a>
-              <a
+              <RouterLink
                 class="icon-link"
-                :href="`/persons/${person.id}/edit`"
+                :to="{ name: 'person-edit', params: { id: person.id } }"
                 :title="`Edit ${personName(person)}`"
                 :aria-label="`Edit ${personName(person)}`"
               >
                 <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
-              </a>
-              <a
+              </RouterLink>
+              <RouterLink
                 class="icon-link"
-                :href="`/persons/${person.id}/delete`"
+                :to="{ name: 'person-delete', params: { id: person.id } }"
                 :title="`Delete ${personName(person)}`"
                 :aria-label="`Delete ${personName(person)}`"
               >
                 <i class="fa-solid fa-trash" aria-hidden="true"></i>
-              </a>
+              </RouterLink>
             </td>
           </tr>
         </tbody>

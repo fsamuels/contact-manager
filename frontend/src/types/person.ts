@@ -10,6 +10,16 @@ export interface PersonDto {
   noteCount: number;
 }
 
+export interface PersonRequest {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+
 export interface PageDto<T> {
   items: T[];
   pageNumber: number;
