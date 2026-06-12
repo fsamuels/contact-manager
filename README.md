@@ -26,6 +26,16 @@ Then open <http://localhost:8080/>.
 The database is in-memory: it is created (with a few sample records) on
 startup and discarded on shutdown.
 
+## UI themes
+
+The &#9881; Settings menu in the top bar switches the UI between themes:
+Light Mode (default), Dark Mode, Google, Claude, Facebook, Alaska Airlines,
+Reddit, Yahoo, Wikipedia, and Amazon. Each theme adjusts colors, fonts, and
+design elements via CSS
+custom properties (the `[data-theme]` blocks in `resources/css/styles.css`).
+The selection is saved per browser in `localStorage` and re-applied before
+first paint by an inline script in `header.jspf`.
+
 ## Building and testing
  compile, run tests, package the WAR
 ```bash

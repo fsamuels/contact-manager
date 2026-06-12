@@ -1,4 +1,5 @@
 <%-- Shared page footer closing the layout opened in header.jspf. --%>
 </main>
+<script src="<c:url value='/resources/js/theme.js'/>"></script>
 </body>
 </html>

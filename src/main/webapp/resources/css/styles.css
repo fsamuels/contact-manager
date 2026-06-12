@@ -1,15 +1,387 @@
-/* Minimal styling for the contact manager. */
+/*
+ * Styling for the contact manager.
+ *
+ * All colors, fonts, and shape tokens are CSS custom properties. :root
+ * defines the default Light Mode; each html[data-theme] block overrides the
+ * tokens to mimic the look of a well-known site. The layout rules further
+ * down only reference tokens, so adding a theme requires no rule changes.
+ *
+ * The active theme is set as a data-theme attribute on <html> by an inline
+ * script in header.jspf (before first paint) and by resources/js/theme.js
+ * when the user picks a theme from the top-bar Settings menu.
+ */
+
+:root {
+    --font-body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-heading: var(--font-body);
+
+    --radius: 4px;          /* panels, inputs, flash messages */
+    --radius-button: 4px;   /* buttons and pagination links */
+    --button-weight: 400;
+
+    --bg: #fafafa;
+    --surface: #fff;
+    --text: #222;
+    --text-muted: #555;
+    --border: #ddd;
+
+    --header-bg: #2c3e50;
+    --header-text: #fff;
+    --header-border: transparent;
+
+    --link: #1d5d90;
+    --accent: #34495e;
+    --accent-border: #2c3e50;
+    --accent-text: #fff;
+    --danger: #b03a2e;
+    --danger-border: #922b21;
+
+    --table-head-bg: #ecf0f1;
+
+    --success-bg: #e6f4ea;
+    --success-border: #b7dfc2;
+    --success-text: #1e6133;
+    --error-bg: #fdecea;
+    --error-border: #f5c6c2;
+    --error-text: #8a1f17;
+}
+
+/* Dark Mode: dark neutral surfaces, light text, muted blue accents. */
+html[data-theme="dark"] {
+    --bg: #121212;
+    --surface: #1e1e1e;
+    --text: #e8e8e8;
+    --text-muted: #a8a8a8;
+    --border: #3a3a3a;
+
+    --header-bg: #1b1b1b;
+    --header-text: #f0f0f0;
+    --header-border: #333;
+
+    --link: #8ab4f8;
+    --accent: #3b6ea5;
+    --accent-border: #2f5884;
+    --accent-text: #fff;
+    --danger: #c0463a;
+    --danger-border: #9e362c;
+
+    --table-head-bg: #262626;
+
+    --success-bg: #19311f;
+    --success-border: #2c5236;
+    --success-text: #9fd6ad;
+    --error-bg: #391b18;
+    --error-border: #5e2b25;
+    --error-text: #f0a399;
+}
+
+/* Google: white, Roboto, Google-blue accents, pill buttons. */
+html[data-theme="google"] {
+    --font-body: Roboto, Arial, sans-serif;
+    --font-heading: "Google Sans", Roboto, Arial, sans-serif;
+
+    --radius: 8px;
+    --radius-button: 999px;
+    --button-weight: 500;
+
+    --bg: #fff;
+    --surface: #fff;
+    --text: #202124;
+    --text-muted: #5f6368;
+    --border: #dadce0;
+
+    --header-bg: #fff;
+    --header-text: #1a73e8;
+    --header-border: #dadce0;
+
+    --link: #1a73e8;
+    --accent: #1a73e8;
+    --accent-border: #1a73e8;
+    --accent-text: #fff;
+    --danger: #d93025;
+    --danger-border: #c5221f;
+
+    --table-head-bg: #f8f9fa;
+
+    --success-bg: #e6f4ea;
+    --success-border: #ceead6;
+    --success-text: #137333;
+    --error-bg: #fce8e6;
+    --error-border: #f6aea9;
+    --error-text: #c5221f;
+}
+
+/* Claude: warm cream background, serif headings, terracotta accents. */
+html[data-theme="claude"] {
+    --font-heading: Georgia, "Times New Roman", serif;
+
+    --radius: 12px;
+    --radius-button: 10px;
+    --button-weight: 500;
+
+    --bg: #faf9f5;
+    --surface: #fff;
+    --text: #141413;
+    --text-muted: #6b675c;
+    --border: #e0dccd;
+
+    --header-bg: #faf9f5;
+    --header-text: #141413;
+    --header-border: #e0dccd;
+
+    --link: #ae5630;
+    --accent: #d97757;
+    --accent-border: #cc6b4a;
+    --accent-text: #fff;
+    --danger: #b03a2e;
+    --danger-border: #922b21;
+
+    --table-head-bg: #f0eee6;
+
+    --success-bg: #e9efdd;
+    --success-border: #cfdcb8;
+    --success-text: #4a6522;
+    --error-bg: #f9e8e0;
+    --error-border: #ecc5b3;
+    --error-text: #9a3a1d;
+}
+
+/* Facebook: light gray canvas, white cards, Facebook-blue accents. */
+html[data-theme="facebook"] {
+    --font-body: Helvetica, Arial, sans-serif;
+
+    --radius: 8px;
+    --radius-button: 6px;
+    --button-weight: 600;
+
+    --bg: #f0f2f5;
+    --surface: #fff;
+    --text: #050505;
+    --text-muted: #65676b;
+    --border: #ced0d4;
+
+    --header-bg: #fff;
+    --header-text: #1877f2;
+    --header-border: #ced0d4;
+
+    --link: #1877f2;
+    --accent: #1877f2;
+    --accent-border: #1877f2;
+    --accent-text: #fff;
+    --danger: #e41e3f;
+    --danger-border: #cc1016;
+
+    --table-head-bg: #f0f2f5;
+
+    --success-bg: #e6f4ea;
+    --success-border: #b8dfc5;
+    --success-text: #1d703a;
+    --error-bg: #ffebe9;
+    --error-border: #f1b8b4;
+    --error-text: #b3221d;
+}
+
+/* Alaska Airlines: midnight-navy header, crisp blue accents. */
+html[data-theme="alaska"] {
+    --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    --radius: 4px;
+    --radius-button: 4px;
+    --button-weight: 600;
+
+    --bg: #f4f7f9;
+    --surface: #fff;
+    --text: #2b2b2b;
+    --text-muted: #5a6872;
+    --border: #cfdbe2;
+
+    --header-bg: #00274a;
+    --header-text: #fff;
+    --header-border: transparent;
+
+    --link: #0074c8;
+    --accent: #0074c8;
+    --accent-border: #005a9c;
+    --accent-text: #fff;
+    --danger: #c8102e;
+    --danger-border: #a30d26;
+
+    --table-head-bg: #e3edf3;
+
+    --success-bg: #e4f2e7;
+    --success-border: #b9dcc2;
+    --success-text: #1f6e35;
+    --error-bg: #fbe9e7;
+    --error-border: #f0bdb5;
+    --error-text: #9c2413;
+}
+
+/* Reddit: gray-blue canvas, white cards, Reddit-orange pill buttons. */
+html[data-theme="reddit"] {
+    --font-body: "IBM Plex Sans", -apple-system, "Segoe UI", Arial, sans-serif;
+
+    --radius: 4px;
+    --radius-button: 999px;
+    --button-weight: 700;
+
+    --bg: #dae0e6;
+    --surface: #fff;
+    --text: #1c1c1c;
+    --text-muted: #7c7c7c;
+    --border: #ccc;
+
+    --header-bg: #fff;
+    --header-text: #ff4500;
+    --header-border: #edeff1;
+
+    --link: #0079d3;
+    --accent: #ff4500;
+    --accent-border: #ff4500;
+    --accent-text: #fff;
+    --danger: #ea0027;
+    --danger-border: #c50021;
+
+    --table-head-bg: #f6f7f8;
+
+    --success-bg: #e2f0e5;
+    --success-border: #a8d5b2;
+    --success-text: #1c6b34;
+    --error-bg: #fdeaea;
+    --error-border: #f3b3b3;
+    --error-text: #a50016;
+}
+
+/* Yahoo: white canvas, purple wordmark and pill buttons, blue links. */
+html[data-theme="yahoo"] {
+    --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    --radius: 8px;
+    --radius-button: 999px;
+    --button-weight: 600;
+
+    --bg: #f4f5f7;
+    --surface: #fff;
+    --text: #1d2228;
+    --text-muted: #5b636a;
+    --border: #d8dade;
+
+    --header-bg: #fff;
+    --header-text: #6001d2;
+    --header-border: #d8dade;
+
+    --link: #0f69ff;
+    --accent: #6001d2;
+    --accent-border: #6001d2;
+    --accent-text: #fff;
+    --danger: #d30d2e;
+    --danger-border: #b00b26;
+
+    --table-head-bg: #f1f1f5;
+
+    --success-bg: #e7f4ec;
+    --success-border: #bfe0cd;
+    --success-text: #19725f;
+    --error-bg: #fdebee;
+    --error-border: #f4bcc6;
+    --error-text: #b00b26;
+}
+
+/* Wikipedia: plain white, serif headings, classic blue links, square corners. */
+html[data-theme="wikipedia"] {
+    --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-heading: "Linux Libertine", Georgia, "Times New Roman", serif;
+
+    --radius: 2px;
+    --radius-button: 2px;
+    --button-weight: 400;
+
+    --bg: #fff;
+    --surface: #fff;
+    --text: #202122;
+    --text-muted: #54595d;
+    --border: #a2a9b1;
+
+    --header-bg: #fff;
+    --header-text: #202122;
+    --header-border: #a2a9b1;
+
+    --link: #3366cc;
+    --accent: #3366cc;
+    --accent-border: #3366cc;
+    --accent-text: #fff;
+    --danger: #d33;
+    --danger-border: #b32424;
+
+    --table-head-bg: #eaecf0;
+
+    --success-bg: #d5fdf4;
+    --success-border: #80cdb8;
+    --success-text: #177860;
+    --error-bg: #fee7e6;
+    --error-border: #f8a397;
+    --error-text: #b32424;
+}
+
+/* Amazon: dark navy header, gray canvas, yellow pill buttons, teal links. */
+html[data-theme="amazon"] {
+    --font-body: "Amazon Ember", "Helvetica Neue", Arial, sans-serif;
+
+    --radius: 8px;
+    --radius-button: 999px;
+    --button-weight: 500;
+
+    --bg: #eaeded;
+    --surface: #fff;
+    --text: #0f1111;
+    --text-muted: #565959;
+    --border: #d5d9d9;
+
+    --header-bg: #131921;
+    --header-text: #fff;
+    --header-border: transparent;
+
+    --link: #007185;
+    --accent: #ffd814;
+    --accent-border: #fcd200;
+    --accent-text: #0f1111;
+    --danger: #b12704;
+    --danger-border: #8f1f03;
+
+    --table-head-bg: #f0f2f2;
+
+    --success-bg: #e8f5e9;
+    --success-border: #b5d8b8;
+    --success-text: #1d6b2c;
+    --error-bg: #fcf0ee;
+    --error-border: #eebcb2;
+    --error-text: #c40000;
+}
 
 body {
-    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--font-body);
     margin: 0;
-    color: #222;
-    background: #fafafa;
+    color: var(--text);
+    background: var(--bg);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1,
+h2 {
+    font-family: var(--font-heading);
+}
+
+a {
+    color: var(--link);
 }
 
 .site-header {
-    background: #2c3e50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--header-bg);
     padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--header-border);
 }
 
 .site-header h1 {
@@ -18,8 +390,85 @@ body {
 }
 
 .site-header a {
-    color: #fff;
+    color: var(--header-text);
     text-decoration: none;
+}
+
+/* Top-bar configuration menu (theme switcher). */
+.config-menu {
+    position: relative;
+}
+
+.config-menu-button {
+    background: transparent;
+    color: var(--header-text);
+    border: 1px solid var(--header-text);
+    border-radius: var(--radius-button);
+    padding: 0.35rem 0.8rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.config-menu-button:hover {
+    opacity: 0.8;
+}
+
+.config-menu-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.4rem);
+    min-width: 12rem;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    padding: 0.4rem;
+    z-index: 100;
+}
+
+.config-menu-heading {
+    margin: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+
+.theme-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.theme-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.45rem 0.6rem;
+    background: none;
+    border: none;
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.theme-option:hover {
+    background: var(--table-head-bg);
+}
+
+.theme-option.is-active {
+    font-weight: 600;
+}
+
+.theme-option.is-active::after {
+    content: "\2713";
+    float: right;
+    color: var(--accent);
 }
 
 .content {
@@ -30,53 +479,55 @@ body {
 
 .flash {
     padding: 0.5rem 0.75rem;
-    border-radius: 4px;
+    border-radius: var(--radius);
 }
 
 .flash-success {
-    background: #e6f4ea;
-    border: 1px solid #b7dfc2;
-    color: #1e6133;
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    color: var(--success-text);
 }
 
 .flash-error {
-    background: #fdecea;
-    border: 1px solid #f5c6c2;
-    color: #8a1f17;
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: var(--error-text);
 }
 
 .button {
     display: inline-block;
     padding: 0.4rem 0.9rem;
-    border: 1px solid #2c3e50;
-    border-radius: 4px;
-    background: #34495e;
-    color: #fff;
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius-button);
+    background: var(--accent);
+    color: var(--accent-text);
     text-decoration: none;
+    font-family: var(--font-body);
     font-size: 0.95rem;
+    font-weight: var(--button-weight);
     cursor: pointer;
 }
 
 .button-danger {
-    background: #b03a2e;
-    border-color: #922b21;
+    background: var(--danger);
+    border-color: var(--danger-border);
 }
 
 .person-table {
     width: 100%;
     border-collapse: collapse;
-    background: #fff;
+    background: var(--surface);
 }
 
 .person-table th,
 .person-table td {
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     padding: 0.5rem 0.75rem;
     text-align: left;
 }
 
 .person-table th {
-    background: #ecf0f1;
+    background: var(--table-head-bg);
 }
 
 .person-table .actions a {
@@ -85,7 +536,7 @@ body {
 
 .no-results {
     font-style: italic;
-    color: #555;
+    color: var(--text-muted);
 }
 
 .page-size-form {
@@ -95,8 +546,11 @@ body {
 
 .page-size-form select {
     padding: 0.25rem;
-    border: 1px solid #bbb;
-    border-radius: 4px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-body);
 }
 
 .pagination {
@@ -112,24 +566,25 @@ body {
     display: inline-block;
     min-width: 1.6rem;
     padding: 0.25rem 0.5rem;
-    border: 1px solid #bbb;
-    border-radius: 4px;
-    background: #fff;
-    color: #2c3e50;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-button);
+    background: var(--surface);
+    color: var(--link);
     text-align: center;
     text-decoration: none;
 }
 
 .pagination .page-current {
-    background: #34495e;
-    border-color: #2c3e50;
-    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent-border);
+    color: var(--accent-text);
     font-weight: 600;
 }
 
 .pagination .page-disabled {
-    color: #bbb;
-    border-color: #ddd;
+    color: var(--text-muted);
+    border-color: var(--border);
+    opacity: 0.5;
 }
 
 .person-form .field {
@@ -144,20 +599,23 @@ body {
 
 .person-form input {
     padding: 0.4rem;
-    border: 1px solid #bbb;
-    border-radius: 4px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     width: 100%;
     max-width: 24rem;
     box-sizing: border-box;
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-body);
 }
 
 .person-form input.input-invalid {
-    border-color: #b03a2e;
+    border-color: var(--danger);
 }
 
 .field-error {
     display: block;
-    color: #b03a2e;
+    color: var(--danger);
     font-size: 0.85rem;
     margin-top: 0.25rem;
 }
