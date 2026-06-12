@@ -32,6 +32,27 @@ Then open <http://localhost:8080/>.
 The database is in-memory: it is created (with sample people and notes) on
 startup and discarded on shutdown.
 
+## REST API
+
+A JSON API mirrors the web UI's functionality, sharing the same service
+layer. Interactive documentation (Swagger UI) is served at
+`/swagger-ui/index.html`; the OpenAPI document at `/v3/api-docs`.
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/persons?page=&size=` | Paginated person list (size 1-100, default 10) |
+| GET | `/api/persons/{id}` | Single person (includes `noteCount`) |
+| POST | `/api/persons` | Create (201 + Location) |
+| PUT | `/api/persons/{id}` | Update |
+| DELETE | `/api/persons/{id}` | Delete (cascades to notes) |
+| GET | `/api/persons/{personId}/notes` | A person's notes, newest first |
+| POST | `/api/persons/{personId}/notes` | Add a note (201 + Location) |
+| DELETE | `/api/persons/{personId}/notes/{noteId}` | Soft-delete a note (204) |
+
+Errors are RFC 9457 problem details (`application/problem+json`): 404 for
+missing records, 400 with a field-to-message `errors` map for validation
+failures.
+
 ## Notes
 
 Each person can have any number of free-text notes, managed from the

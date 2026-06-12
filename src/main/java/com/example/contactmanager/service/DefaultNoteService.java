@@ -43,10 +43,10 @@ public class DefaultNoteService implements NoteService {
     }
 
     @Override
-    public UUID addNote(UUID personId, String noteText) {
+    public Note addNote(UUID personId, String noteText) {
         Person person = personRepository.findById(personId)
                 .orElseThrow(() -> new PersonNotFoundException(personId));
-        return noteRepository.save(new Note(person, noteText)).getId();
+        return noteRepository.save(new Note(person, noteText));
     }
 
     @Override
