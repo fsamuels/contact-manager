@@ -5,9 +5,9 @@ interview-style sample development project specification.
 
 ## Stack
 
-- Java 24 (compiled with `--release 24`, the newest class-file version the Jetty plugin's bundled ASM can parse)
+- Java 25
 - Maven
-- Jetty 12 (EE10) via `jetty-ee10-maven-plugin`
+- Spring Boot 3.5 (embedded Tomcat; Tomcat is required for Boot's JSP support)
 - Spring MVC 6 / Spring JDBC 6
 - H2 in-memory database
 - JSP (JSTL 3) views with HTML5, CSS, and jQuery
@@ -15,10 +15,16 @@ interview-style sample development project specification.
 
 ## Running locally
 
-Requires JDK 24 or newer and Maven 3.9+.
+Requires JDK 25 or newer and Maven 3.9+.
 
 ```bash
-mvn jetty:run
+mvn spring-boot:run
+```
+
+or build and run the executable WAR:
+
+```bash
+mvn package && java -jar target/contact-manager.war
 ```
 
 Then open <http://localhost:8080/>.
@@ -48,11 +54,12 @@ The WAR is produced at `target/contact-manager.war`.
 
 | Layer | Package / location |
 |---|---|
+| Application entry point | `com.example.contactmanager.ContactManagerApplication` |
 | Web (controllers) | `com.example.contactmanager.web` |
 | Service | `com.example.contactmanager.service` |
 | Data access (Spring JDBC) | `com.example.contactmanager.dao` |
 | Domain model | `com.example.contactmanager.domain` |
-| Configuration | `com.example.contactmanager.config` |
+| Configuration | `src/main/resources/application.properties` |
 | Views (JSP) | `src/main/webapp/WEB-INF/views` |
 | Static assets (CSS/JS) | `src/main/webapp/resources` |
 | DB schema / seed data | `src/main/resources/db` |

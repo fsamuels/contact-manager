@@ -1,19 +1,15 @@
 package com.example.contactmanager.web;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
-import com.example.contactmanager.config.WebMvcConfig;
 import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
 import com.example.contactmanager.service.PersonService;
-import com.example.contactmanager.testconfig.TestDbConfig;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,25 +22,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
- * MockMvc tests for {@link PersonController} running against the real service
- * and DAO layers with an embedded database.
+ * MockMvc tests for {@link PersonController} running against the full Boot
+ * application context (real service and DAO layers, embedded database).
+ * Each test runs in a rolled-back transaction; the test
+ * {@code application.properties} skips the sample data, so the database
+ * starts empty.
  */
-@SpringJUnitWebConfig({ TestDbConfig.class, WebMvcConfig.class })
+@SpringBootTest
+@AutoConfigureMockMvc
 @Transactional
 class PersonControllerTest {
 
     @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
     private PersonService personService;
 
+    @Autowired
     private MockMvc mockMvc;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-    }
 
     private long createSamplePerson() {
         Person person = new Person();
