@@ -1,0 +1,52 @@
+package com.example.contactmanager.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.example.contactmanager.dao.PersonNotFoundException;
+import com.example.contactmanager.domain.Person;
+
+/**
+ * Business operations for managing {@link Person} records.
+ */
+public interface PersonService {
+
+    /**
+     * Lists all persons in the system.
+     *
+     * @return all persons ordered by last name then first name
+     */
+    List<Person> listPeople();
+
+    /**
+     * Finds a single person by id.
+     *
+     * @param id the person id
+     * @return the person, or empty if not found
+     */
+    Optional<Person> findPerson(long id);
+
+    /**
+     * Creates a new person record.
+     *
+     * @param person the validated person data; the id field is ignored
+     * @return the generated id of the new record
+     */
+    long createPerson(Person person);
+
+    /**
+     * Updates an existing person record.
+     *
+     * @param person the validated person data; must have a non-null id
+     * @throws PersonNotFoundException if the person no longer exists
+     */
+    void updatePerson(Person person);
+
+    /**
+     * Deletes a person record by id.
+     *
+     * @param id the person id
+     * @throws PersonNotFoundException if the person no longer exists
+     */
+    void deletePerson(long id);
+}
