@@ -90,7 +90,7 @@ failures.
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/persons?page=&size=` | Paginated list (size 1–100, default 20) |
+| GET | `/api/persons?page=&size=&sort=&direction=` | Paginated list (size 1–100, default 20; sort firstName/lastName/emailAddress asc/desc) |
 | GET | `/api/persons/{id}` | Single person (includes `noteCount`) |
 | POST | `/api/persons` | Create (201 + Location) |
 | PUT | `/api/persons/{id}` | Update |

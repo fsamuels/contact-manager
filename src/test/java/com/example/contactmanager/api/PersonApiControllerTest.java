@@ -90,6 +90,28 @@ class PersonApiControllerTest {
     }
 
     @Test
+    void listSortsByRequestedPersonField() throws Exception {
+        createSamplePerson("Zoe", "Adams");
+        createSamplePerson("Amy", "Baker");
+        createSamplePerson("Cal", "Carter");
+
+        mockMvc.perform(get("/api/persons")
+                        .param("sort", "firstName")
+                        .param("direction", "desc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items[0].firstName").value("Zoe"))
+                .andExpect(jsonPath("$.items[1].firstName").value("Cal"))
+                .andExpect(jsonPath("$.items[2].firstName").value("Amy"));
+    }
+
+    @Test
+    void listRejectsUnsupportedSortField() throws Exception {
+        mockMvc.perform(get("/api/persons").param("sort", "noteCount"))
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("Content-Type", startsWith("application/problem+json")));
+    }
+
+    @Test
     void getReturnsPersonWithNoteCount() throws Exception {
         UUID id = createSamplePerson("Jane", "Doe");
         noteService.addNote(id, "First.");

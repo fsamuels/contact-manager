@@ -43,6 +43,12 @@ public class DefaultPersonService implements PersonService {
     @Override
     @Transactional(readOnly = true)
     public Page<Person> listPeople(int pageNumber, int pageSize) {
+        return listPeople(pageNumber, pageSize, LISTING_SORT);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Person> listPeople(int pageNumber, int pageSize, Sort sort) {
         if (pageSize < 1) {
             throw new IllegalArgumentException("pageSize must be positive: " + pageSize);
         }
@@ -50,7 +56,7 @@ public class DefaultPersonService implements PersonService {
         int totalPages = (int) Math.max(1, (totalItems + pageSize - 1) / pageSize);
         int page = Math.clamp(pageNumber, 1, totalPages);
         List<Person> items = personRepository
-                .findAll(PageRequest.of(page - 1, pageSize, LISTING_SORT))
+                .findAll(PageRequest.of(page - 1, pageSize, sort))
                 .getContent();
         return new Page<>(items, page, pageSize, totalItems);
     }

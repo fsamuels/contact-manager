@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Sort;
 
 import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
@@ -64,6 +65,19 @@ class DefaultPersonServiceTest {
     @Test
     void listPeopleRejectsNonPositivePageSize() {
         assertThrows(IllegalArgumentException.class, () -> personService.listPeople(1, 0));
+    }
+
+    @Test
+    void listPeopleUsesProvidedSort() {
+        personService.createPerson(newPerson("Zoe", "Adams"));
+        personService.createPerson(newPerson("Amy", "Baker"));
+        personService.createPerson(newPerson("Cal", "Carter"));
+
+        Page<Person> page = personService.listPeople(1, 10, Sort.by(Sort.Direction.DESC, "firstName"));
+
+        assertEquals("Zoe", page.items().getFirst().getFirstName());
+        assertEquals("Cal", page.items().get(1).getFirstName());
+        assertEquals("Amy", page.items().get(2).getFirstName());
     }
 
     @Test

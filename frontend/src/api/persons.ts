@@ -1,10 +1,17 @@
 import type { PageDto, PersonDto, PersonRequest } from '../types/person';
 import { parseJsonResponse } from './http';
 
-export async function fetchPersons(page: number, size: number): Promise<PageDto<PersonDto>> {
+export async function fetchPersons(
+  page: number,
+  size: number,
+  sort: string,
+  direction: string,
+): Promise<PageDto<PersonDto>> {
   const params = new URLSearchParams({
     page: String(page),
     size: String(size),
+    sort,
+    direction,
   });
   const response = await fetch(`/api/persons?${params}`);
   return parseJsonResponse(response);

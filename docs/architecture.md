@@ -71,8 +71,8 @@ note   (note_id UUID PK, person_id UUID FK → person,
 ## Data flow — typical request
 
 ```
-PersonListView → fetchPersons(page, size)
-  → GET /api/persons?page=1&size=20
+PersonListView → fetchPersons(page, size, sort, direction)
+  → GET /api/persons?page=1&size=20&sort=lastName&direction=asc
   → PersonApiController.list()
   → personService.listPeople() + noteService.countNotes()
   → PersonRepository (Spring Data JPA) → H2

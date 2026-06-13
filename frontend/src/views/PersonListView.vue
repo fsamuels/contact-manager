@@ -14,6 +14,8 @@ const router = useRouter();
 
 const page = computed(() => parsePositiveInt(route.query.page, 1));
 const size = computed(() => normalizePageSize(route.query.size));
+const sort = computed(() => normalizeSort(route.query.sort));
+const direction = computed(() => normalizeDirection(route.query.direction));
 
 const people = ref<PersonDto[]>([]);
 const personPage = ref<PageDto<PersonDto> | null>(null);
@@ -33,6 +35,16 @@ function normalizePageSize(value: unknown): number {
     : DEFAULT_PAGE_SIZE;
 }
 
+function normalizeSort(value: unknown): string {
+  return ['firstName', 'lastName', 'emailAddress'].includes(String(value))
+    ? String(value)
+    : 'lastName';
+}
+
+function normalizeDirection(value: unknown): string {
+  return String(value).toLowerCase() === 'desc' ? 'desc' : 'asc';
+}
+
 function personName(person: PersonDto): string {
   return `${person.firstName} ${person.lastName}`;
 }
@@ -41,7 +53,7 @@ async function loadPeople() {
   loading.value = true;
   error.value = null;
   try {
-    const pageData = await fetchPersons(page.value, size.value);
+    const pageData = await fetchPersons(page.value, size.value, sort.value, direction.value);
     people.value = pageData.items;
     personPage.value = pageData;
   } catch (e) {
@@ -54,15 +66,61 @@ async function loadPeople() {
 }
 
 function goToPage(nextPage: number) {
-  router.push({ query: { page: String(nextPage), size: String(size.value) } });
+  router.push({
+    query: {
+      page: String(nextPage),
+      size: String(size.value),
+      sort: sort.value,
+      direction: direction.value,
+    },
+  });
 }
 
 function onPageSizeChange(event: Event) {
   const nextSize = normalizePageSize((event.target as HTMLSelectElement).value);
-  router.push({ query: { page: '1', size: String(nextSize) } });
+  router.push({
+    query: {
+      page: '1',
+      size: String(nextSize),
+      sort: sort.value,
+      direction: direction.value,
+    },
+  });
 }
 
-watch([page, size], loadPeople, { immediate: true });
+function sortLabel(field: string): string {
+  const labels: Record<string, string> = {
+    firstName: 'First name',
+    lastName: 'Last name',
+    emailAddress: 'Email address',
+  };
+  const label = labels[field] ?? field;
+  if (sort.value !== field) {
+    return `Sort ${label} ascending`;
+  }
+  return direction.value === 'asc' ? `Sort ${label} descending` : `Sort ${label} ascending`;
+}
+
+function sortIndicator(field: string): string {
+  if (sort.value !== field) {
+    return '';
+  }
+  return direction.value === 'asc' ? ' (asc)' : ' (desc)';
+}
+
+function onSort(field: string) {
+  const nextDirection = sort.value === field && direction.value === 'asc' ? 'desc' : 'asc';
+  router.push({
+    query: {
+      page: '1',
+      size: String(size.value),
+      sort: field,
+      direction: nextDirection,
+    },
+  });
+}
+
+watch([page, size, sort, direction], loadPeople, { immediate: true });
 
 watch(
   () => route.fullPath,
@@ -104,9 +162,36 @@ watch(
       <table class="person-table">
         <thead>
           <tr>
-            <th scope="col">First name</th>
-            <th scope="col">Last name</th>
-            <th scope="col">Email address</th>
+            <th scope="col">
+              <button
+                type="button"
+                class="sort-button"
+                :aria-label="sortLabel('firstName')"
+                @click="onSort('firstName')"
+              >
+                First name{{ sortIndicator('firstName') }}
+              </button>
+            </th>
+            <th scope="col">
+              <button
+                type="button"
+                class="sort-button"
+                :aria-label="sortLabel('lastName')"
+                @click="onSort('lastName')"
+              >
+                Last name{{ sortIndicator('lastName') }}
+              </button>
+            </th>
+            <th scope="col">
+              <button
+                type="button"
+                class="sort-button"
+                :aria-label="sortLabel('emailAddress')"
+                @click="onSort('emailAddress')"
+              >
+                Email address{{ sortIndicator('emailAddress') }}
+              </button>
+            </th>
             <th scope="col">Actions</th>
           </tr>
         </thead>

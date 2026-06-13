@@ -555,6 +555,23 @@ a {
     font-weight: 600;
 }
 
+.person-table .sort-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-weight: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.person-table .sort-button:hover,
+.person-table .sort-button:focus {
+    color: var(--link);
+    text-decoration: underline;
+}
+
 .person-table .actions a {
     margin-right: 0.4rem;
 }
