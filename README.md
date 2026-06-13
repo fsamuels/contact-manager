@@ -9,7 +9,7 @@ See [docs/architecture.md](docs/architecture.md),
 
 ## Features
 
-- **Person management** — create, edit, delete, paginated list (10/25/50/100 per page)
+- **Person management** — create, edit, delete, paginated list (10/20/50/100 per page)
 - **Notes** — each person can have any number of free-text notes; add and soft-delete only
 - **REST API** — full CRUD, RFC 9457 problem details, Swagger UI
 - **10 UI themes** — Light, Dark, Google, Claude, Facebook, Alaska Airlines, Reddit, Yahoo, Wikipedia, Amazon; persisted in `localStorage`
@@ -90,7 +90,7 @@ failures.
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/persons?page=&size=` | Paginated list (size 1–100, default 10) |
+| GET | `/api/persons?page=&size=&sort=&direction=` | Paginated list (size 1–100, default 20; sort firstName/lastName/emailAddress asc/desc) |
 | GET | `/api/persons/{id}` | Single person (includes `noteCount`) |
 | POST | `/api/persons` | Create (201 + Location) |
 | PUT | `/api/persons/{id}` | Update |

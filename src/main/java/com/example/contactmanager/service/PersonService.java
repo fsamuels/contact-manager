@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Sort;
+
 import com.example.contactmanager.domain.Page;
 import com.example.contactmanager.domain.Person;
 
@@ -31,6 +33,16 @@ public interface PersonService {
      * @return the requested page, ordered by last name then first name
      */
     Page<Person> listPeople(int pageNumber, int pageSize);
+
+    /**
+     * Lists a single page of persons using the provided sort.
+     *
+     * @param pageNumber the requested 1-based page number
+     * @param pageSize   the maximum number of persons per page; must be positive
+     * @param sort       the sort to apply
+     * @return the requested page
+     */
+    Page<Person> listPeople(int pageNumber, int pageSize, Sort sort);
 
     /**
      * Finds a single person by id.

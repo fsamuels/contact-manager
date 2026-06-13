@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +40,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Persons", description = "CRUD operations for person records")
 public class PersonApiController {
 
+    private static final String DEFAULT_SORT = "lastName";
+    private static final String DEFAULT_DIRECTION = "asc";
+
     private final PersonService personService;
     private final NoteService noteService;
 
@@ -55,8 +61,10 @@ public class PersonApiController {
     @GetMapping
     @Operation(summary = "List persons (paginated)")
     public PageDto<PersonDto> list(@RequestParam(name = "page", defaultValue = "1") int page,
-                                   @RequestParam(name = "size", defaultValue = "10") @Min(1) @Max(100) int size) {
-        Page<Person> personPage = personService.listPeople(page, size);
+                                   @RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(100) int size,
+                                   @RequestParam(name = "sort", defaultValue = DEFAULT_SORT) String sort,
+                                   @RequestParam(name = "direction", defaultValue = DEFAULT_DIRECTION) String direction) {
+        Page<Person> personPage = personService.listPeople(page, size, listingSort(sort, direction));
         List<UUID> ids = personPage.items().stream().map(Person::getId).toList();
         var noteCounts = noteService.countNotes(ids);
         return PageDto.of(personPage, person -> PersonDto.of(person, noteCounts.get(person.getId())));
@@ -107,5 +115,25 @@ public class PersonApiController {
     private PersonDto toDto(Person person) {
         long noteCount = noteService.countNotes(List.of(person.getId())).get(person.getId());
         return PersonDto.of(person, noteCount);
+    }
+
+    private Sort listingSort(String sort, String direction) {
+        Sort.Direction sortDirection = switch (direction.toLowerCase()) {
+            case "asc" -> Sort.Direction.ASC;
+            case "desc" -> Sort.Direction.DESC;
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported sort direction: " + direction);
+        };
+
+        return switch (sort) {
+            case "firstName" -> Sort.by(sortDirection, "firstName")
+                    .and(Sort.by(sortDirection, "lastName"))
+                    .and(Sort.by("id"));
+            case "lastName" -> Sort.by(sortDirection, "lastName")
+                    .and(Sort.by(sortDirection, "firstName"))
+                    .and(Sort.by("id"));
+            case "emailAddress" -> Sort.by(sortDirection, "emailAddress")
+                    .and(Sort.by("id"));
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported sort field: " + sort);
+        };
     }
 }
