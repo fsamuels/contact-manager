@@ -3,7 +3,6 @@ import { computed, ref, watch } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { addNote, deleteNote, fetchNotes } from '../api/notes';
 import { fetchPerson } from '../api/persons';
-import ClassicUiLink from '../components/ClassicUiLink.vue';
 import { ApiError } from '../types/api';
 import { NOTE_MAX_LENGTH, type NoteDto } from '../types/note';
 import type { PersonDto } from '../types/person';
@@ -118,10 +117,6 @@ watch(
 <template>
   <div>
     <h2>Notes<template v-if="person"> for {{ personName }}</template></h2>
-
-    <p class="classic-ui-link">
-      <ClassicUiLink />
-    </p>
 
     <p v-if="successMessage" class="flash flash-success">{{ successMessage }}</p>
     <p v-if="loadError" class="flash flash-error">{{ loadError }}</p>

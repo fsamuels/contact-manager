@@ -2,7 +2,6 @@
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { createPerson, fetchPerson, updatePerson } from '../api/persons';
-import ClassicUiLink from '../components/ClassicUiLink.vue';
 import PersonForm from '../components/PersonForm.vue';
 import { ApiError } from '../types/api';
 import type { PersonDto } from '../types/person';
@@ -106,10 +105,6 @@ watch(
 <template>
   <div>
     <h2>{{ formTitle }}</h2>
-
-    <p class="classic-ui-link">
-      <ClassicUiLink />
-    </p>
 
     <p v-if="loadError" class="flash flash-error">{{ loadError }}</p>
     <p v-if="submitError" class="flash flash-error">{{ submitError }}</p>

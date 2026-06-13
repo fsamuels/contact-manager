@@ -2,7 +2,6 @@
 import { computed, ref, watch } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { deletePerson, fetchPerson } from '../api/persons';
-import ClassicUiLink from '../components/ClassicUiLink.vue';
 import type { PersonDto } from '../types/person';
 
 const route = useRoute();
@@ -72,10 +71,6 @@ watch(
 <template>
   <div>
     <h2>Delete Person</h2>
-
-    <p class="classic-ui-link">
-      <ClassicUiLink />
-    </p>
 
     <p v-if="loadError" class="flash flash-error">{{ loadError }}</p>
     <p v-if="submitError" class="flash flash-error">{{ submitError }}</p>

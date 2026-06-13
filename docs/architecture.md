@@ -2,36 +2,22 @@
 
 ## Overview
 
-Contact Manager is a Spring Boot 3.5 application that serves two complete UIs
-from a single executable artifact:
-
-1. **JSP UI** (`/persons`) — classic server-rendered views using Spring MVC,
-   JSP/JSTL, jQuery, and CSS custom properties.
-2. **Vue SPA** (`/app/`) — a client-side application built with Vue 3,
-   TypeScript, and Vite Router, consuming the REST API.
-
-Both UIs share the same service layer. The REST API is the sole data access
-path for the SPA; the JSP controllers call the service layer directly.
+Contact Manager is a Spring Boot 3.5 application exposing a JSON REST API,
+with a Vue 3 + TypeScript single-page application as its UI. Both ship in a
+single executable JAR: the Vite-built SPA is bundled into Boot's static
+resources and served at `/app/`.
 
 ```
-Browser
-  ├── /persons (JSP UI)
-  │     └── PersonController / NoteController
-  │                 │
-  │         Service layer
-  │                 │
-  │         Repository layer (Spring Data JPA)
-  │                 │
-  │              H2 (in-memory)
-  │
-  └── /app/ (Vue SPA)
-        └── REST API (/api/persons, /api/persons/{id}/notes)
-                  │
-          Service layer  ←── same beans
-                  │
-          Repository layer
-                  │
-               H2 (in-memory)
+Browser ── /app/ (Vue SPA, Vue Router)
+              │
+              ▼  fetch
+        REST API (/api/persons, /api/persons/{id}/notes)
+              │
+        Service layer
+              │
+        Repository layer (Spring Data JPA / Hibernate)
+              │
+           H2 (in-memory)
 ```
 
 ## Major components
@@ -40,24 +26,27 @@ Browser
 
 | Package | Responsibility |
 |---|---|
-| `domain` | JPA entities (`Person`, `Note`) and the `Page<T>` paging wrapper |
+| `domain` | JPA entities (`Person`, `Note`) and the `Page<T>` paging record |
 | `repository` | Spring Data JPA interfaces; `NoteRepository` has a JPQL group-by query for batch note counts |
 | `service` | Business logic: pagination clamping, state-abbreviation normalisation, note ownership checks |
-| `web` | JSP controllers (`PersonController`, `NoteController`) and `SpaController` (SPA entry-point forward) |
+| `web` | `SpaController`: redirects `/` to the SPA and forwards client-side routes to `index.html` |
 | `api` | REST controllers (`PersonApiController`, `NoteApiController`), record DTOs, `ApiExceptionHandler` |
 
-**`ApiExceptionHandler`** is scoped to `basePackages = "com.example.contactmanager.api"` so it only intercepts exceptions in the REST layer; the JSP controllers use redirect-with-flash instead of JSON error responses.
+**`ApiExceptionHandler`** (`@RestControllerAdvice` scoped to the `api`
+package) converts exceptions to RFC 9457 problem details: 404 for missing
+records, 400 with a field-to-message `errors` map for validation failures.
 
 ### Frontend (`frontend/`)
 
 | Path | Responsibility |
 |---|---|
 | `src/api/` | Thin fetch wrappers (`persons.ts`, `notes.ts`); `parseJsonResponse` in `http.ts` converts non-OK responses and `application/problem+json` bodies into typed `ApiError` exceptions |
+| `src/assets/styles.css` | The design system: CSS custom properties with 10 `html[data-theme]` blocks; bundled by Vite |
 | `src/types/` | TypeScript interfaces mirroring the Java DTOs (`PersonDto`, `NoteDto`, `PageDto`, `ProblemDetail`) |
 | `src/utils/personValidation.ts` | Client-side field validation logic (mirrors Bean Validation rules) |
 | `src/composables/useTheme.ts` | Module-level reactive theme state; reads/writes `localStorage` and `html[data-theme]` |
 | `src/constants/themes.ts` | Single source of truth for the 10 theme IDs and labels |
-| `src/components/` | Reusable components: `PersonForm` (controlled form with blur-validation), `ThemePicker` (dropdown menu), `ClassicUiLink` (back-link to JSP UI) |
+| `src/components/` | Reusable components: `PersonForm` (controlled form with blur-validation), `ThemePicker` (dropdown menu) |
 | `src/views/` | Route-level components: `PersonListView`, `PersonFormView` (create + edit), `PersonDeleteView`, `PersonNotesView` |
 | `src/router/index.ts` | Vue Router with `createWebHistory('/app/')` |
 
@@ -79,7 +68,7 @@ note   (note_id UUID PK, person_id UUID FK → person,
   to every query.
 - Hard-deleting a person cascades to their notes via `ON DELETE CASCADE`.
 
-## Data flow — Vue SPA request
+## Data flow — typical request
 
 ```
 PersonListView → fetchPersons(page, size)
@@ -93,18 +82,15 @@ PersonListView → fetchPersons(page, size)
 
 ## Deployment architecture
 
-A single `contact-manager.war` is produced by `mvn package`. It is executable
-(`java -jar`) via Spring Boot's embedded Tomcat launcher and can also be
-deployed to a standalone Tomcat container.
+`mvn package` produces a single executable `target/contact-manager.jar`
+(embedded Tomcat, `java -jar`).
 
 The Vite build (`frontend-maven-plugin` → `vite build`) runs during the
 `generate-resources` Maven phase and outputs into
 `src/main/resources/static/app/`. Spring Boot's static resource handling
-serves that directory at `/app/**`. `SpaController` forwards bare `/app` and
-`/app/` requests to `/app/index.html` to bootstrap the SPA.
-
-WAR packaging is required because JSP compilation via Jasper is only
-supported by Spring Boot with WAR packaging (not JAR).
+serves that directory at `/app/**`. `SpaController` redirects `/` to `/app/`
+and forwards each client-side route to `/app/index.html` so deep links and
+refreshes work.
 
 ## Frontend build integration
 
@@ -117,24 +103,44 @@ mvn package
 ```
 
 Skip with `-Dskip.frontend=true`. For dev, run `npm run dev` in `frontend/`;
-Vite proxies `/api` and `/resources` to `localhost:8080`.
+Vite proxies `/api` to `localhost:8080` with hot-module reload.
 
 ## Design decisions
 
 | Decision | Rationale |
 |---|---|
 | `ddl-auto=none` | SQL scripts in `db/schema.sql` are the authoritative schema definition; Hibernate never auto-generates or alters tables |
-| `open-in-view=false` | Prevents lazy-load surprises in view rendering; all data is loaded in the service layer |
-| REST error advice scoped to `api` package | Keeps JSON problem-detail responses isolated from the JSP layer, which uses redirect-with-flash for errors |
-| `Page<T>` as a class (not a record) | Jakarta EL 5.0 in JSP requires `getXxx()` accessor methods; records use component accessor names without `get` prefix, which JSP EL cannot invoke |
+| `open-in-view=false` | Prevents lazy-load surprises outside the service layer; all data is loaded before serialization |
+| REST error advice scoped to `api` package | Keeps the JSON problem-detail contract explicit to the API layer |
 | `@SoftDelete` on `Note` | Notes are never physically removed; the flag is transparent to all queries via Hibernate's filter |
 | UUID primary keys | Avoids integer-sequence collisions in multi-instance scenarios; deterministic UUIDv5 in seed data ensures consistent FK relationships |
-| Two UIs coexisting | Allows incremental migration from JSP to Vue without a big-bang rewrite; the JSP UI is removed once the SPA is feature-complete |
+| SPA route forwards enumerated in `SpaController` | Each client route is listed explicitly rather than a `/app/**` catch-all, so requests for real files (hashed assets) still reach the static resource handler |
+| Pre-paint theme script in `index.html` | Applies the persisted theme to `html[data-theme]` before the stylesheet loads, preventing a flash of the default theme |
+
+### History
+
+The project began as a server-rendered JSP application and was migrated
+incrementally: Spring Boot → Hibernate/JPA → UUID keys → REST API → Vue SPA.
+The JSP layer was removed once the SPA reached feature parity, which also
+allowed the switch from WAR to JAR packaging and converting `Page<T>` to a
+record (JSP EL required `getXxx()` accessors).
+
+## Technical constraints
+
+- **H2 in-memory database** — data is lost on restart; the SQL init scripts
+  run on every boot. Tests override `spring.sql.init.data-locations` to start
+  empty.
+- **Node version pinned** in `pom.xml` (`frontend-maven-plugin` installs
+  v22.12.0); local `npm run dev` can use any compatible Node.
 
 ## Known architectural debt
 
-- **WAR packaging** required until the JSP layer is removed; after that the project can switch to a JAR and drop `tomcat-embed-jasper`.
-- **Two UI layers** — JSP and Vue SPA — both active; they share CSS (via `/resources/css/styles.css`) but have separate navigation and some duplicated logic (client-side validation, note counts).
-- **No authentication or CSRF protection** — the app has no security layer. All endpoints are unauthenticated. Before any public-facing deployment, Spring Security is needed.
-- **H2 in-memory database** — data is lost on restart; no persistence story for production.
-- **`Page<T>` cannot be a record** — a minor design constraint imposed by JSP EL; once JSP is removed, `Page<T>` can be converted to a record.
+- **No authentication or CSRF protection** — all endpoints are
+  unauthenticated. Spring Security is needed before any public-facing
+  deployment.
+- **No production database story** — H2 in-memory only; a real database plus
+  a migration tool (Flyway/Liquibase) is future work.
+- **No frontend test suite** — the Vue code has no unit or component tests;
+  coverage is backend-only.
+- **Font Awesome via CDN** — the icon font is an external runtime dependency
+  of `frontend/index.html`.

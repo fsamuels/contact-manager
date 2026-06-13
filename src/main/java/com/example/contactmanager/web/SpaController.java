@@ -13,6 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SpaController {
 
     /**
+     * Redirects the application root to the SPA.
+     */
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/app/";
+    }
+
+    /**
      * Forwards SPA entry points and client routes to {@code index.html}.
      */
     @GetMapping({

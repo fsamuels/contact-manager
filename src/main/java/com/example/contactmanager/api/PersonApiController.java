@@ -57,7 +57,7 @@ public class PersonApiController {
     public PageDto<PersonDto> list(@RequestParam(name = "page", defaultValue = "1") int page,
                                    @RequestParam(name = "size", defaultValue = "10") @Min(1) @Max(100) int size) {
         Page<Person> personPage = personService.listPeople(page, size);
-        List<UUID> ids = personPage.getItems().stream().map(Person::getId).toList();
+        List<UUID> ids = personPage.items().stream().map(Person::getId).toList();
         var noteCounts = noteService.countNotes(ids);
         return PageDto.of(personPage, person -> PersonDto.of(person, noteCounts.get(person.getId())));
     }

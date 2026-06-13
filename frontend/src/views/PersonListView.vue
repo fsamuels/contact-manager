@@ -2,7 +2,6 @@
 import { computed, ref, watch } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { fetchPersons } from '../api/persons';
-import ClassicUiLink from '../components/ClassicUiLink.vue';
 import {
   DEFAULT_PAGE_SIZE,
   PAGE_SIZE_OPTIONS,
@@ -78,10 +77,6 @@ watch(
 <template>
   <div>
     <h2>People</h2>
-
-    <p class="classic-ui-link">
-      <ClassicUiLink />
-    </p>
 
     <p v-if="flashSuccess" class="flash flash-success">{{ flashSuccess }}</p>
     <p v-if="error" class="flash flash-error">Could not load people: {{ error }}</p>
