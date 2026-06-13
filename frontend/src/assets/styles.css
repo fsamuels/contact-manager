@@ -537,26 +537,31 @@ a {
     width: 100%;
     border-collapse: collapse;
     background: var(--surface);
+    font-size: 0.92rem;
+    line-height: 1.25;
 }
 
 .person-table th,
 .person-table td {
     border: 1px solid var(--border);
-    padding: 0.5rem 0.75rem;
+    padding: 0.32rem 0.5rem;
     text-align: left;
+    vertical-align: middle;
 }
 
 .person-table th {
     background: var(--table-head-bg);
+    font-size: 0.82rem;
+    font-weight: 600;
 }
 
 .person-table .actions a {
-    margin-right: 0.75rem;
+    margin-right: 0.4rem;
 }
 
 .person-table .actions .icon-link {
-    margin-right: 0.6rem;
-    font-size: 1.05rem;
+    margin-right: 0.35rem;
+    font-size: 0.95rem;
     text-decoration: none;
 }
 

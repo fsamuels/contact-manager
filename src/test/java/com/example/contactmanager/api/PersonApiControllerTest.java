@@ -75,11 +75,11 @@ class PersonApiControllerTest {
 
         mockMvc.perform(get("/api/persons"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.items", hasSize(10)))
+                .andExpect(jsonPath("$.items", hasSize(11)))
                 .andExpect(jsonPath("$.pageNumber").value(1))
-                .andExpect(jsonPath("$.pageSize").value(10))
+                .andExpect(jsonPath("$.pageSize").value(20))
                 .andExpect(jsonPath("$.totalItems").value(11))
-                .andExpect(jsonPath("$.totalPages").value(2));
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @Test

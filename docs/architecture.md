@@ -72,7 +72,7 @@ note   (note_id UUID PK, person_id UUID FK → person,
 
 ```
 PersonListView → fetchPersons(page, size)
-  → GET /api/persons?page=1&size=10
+  → GET /api/persons?page=1&size=20
   → PersonApiController.list()
   → personService.listPeople() + noteService.countNotes()
   → PersonRepository (Spring Data JPA) → H2
