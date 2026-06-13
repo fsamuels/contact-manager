@@ -1,8 +1,7 @@
 # Contact Manager
 
-A CRUD contact manager with two UIs sharing the same backend: a classic JSP
-UI and a modern Vue 3 SPA — both served from the same Spring Boot executable
-artifact.
+A CRUD contact manager: a Spring Boot REST API with a Vue 3 single-page
+front end, served together from one executable artifact.
 
 See [docs/architecture.md](docs/architecture.md),
 [docs/current-status.md](docs/current-status.md), and
@@ -12,7 +11,6 @@ See [docs/architecture.md](docs/architecture.md),
 
 - **Person management** — create, edit, delete, paginated list (10/25/50/100 per page)
 - **Notes** — each person can have any number of free-text notes; add and soft-delete only
-- **Two UIs** — Vue 3 SPA at `/app/` and classic JSP UI at `/persons`, both feature-complete (person CRUD and notes)
 - **REST API** — full CRUD, RFC 9457 problem details, Swagger UI
 - **10 UI themes** — Light, Dark, Google, Claude, Facebook, Alaska Airlines, Reddit, Yahoo, Wikipedia, Amazon; persisted in `localStorage`
 - **142 seed records** with ~323 notes pre-loaded on every startup
@@ -25,8 +23,7 @@ See [docs/architecture.md](docs/architecture.md),
 | Build | Maven 3.9+ |
 | Framework | Spring Boot 3.5 (embedded Tomcat) |
 | Persistence | Spring Data JPA / Hibernate 6, H2 in-memory |
-| Legacy UI | Spring MVC, JSP (JSTL 3), jQuery |
-| SPA | Vue 3, TypeScript, Vite 6, Vue Router 4 |
+| Front end | Vue 3, TypeScript, Vite 6, Vue Router 4 |
 | API docs | springdoc-openapi 2 (Swagger UI) |
 | Validation | Jakarta Bean Validation (Hibernate Validator) |
 | Testing | JUnit 5, Spring Boot Test, MockMvc |
@@ -39,10 +36,10 @@ Requires JDK 25+ and Maven 3.9+.
 mvn spring-boot:run
 ```
 
-Or build and run the executable WAR:
+Or build and run the executable JAR:
 
 ```bash
-mvn package && java -jar target/contact-manager.war
+mvn package && java -jar target/contact-manager.jar
 ```
 
 The database is in-memory: schema and seed data are applied on every startup
@@ -50,9 +47,8 @@ and discarded on shutdown.
 
 | URL | Description |
 |---|---|
-| `http://localhost:8080/` | Redirects to JSP person list |
-| `http://localhost:8080/persons` | JSP person list |
-| `http://localhost:8080/app/` | Vue SPA person list |
+| `http://localhost:8080/` | Redirects to the app at `/app/` |
+| `http://localhost:8080/app/` | Vue app (person list) |
 | `http://localhost:8080/swagger-ui/index.html` | Swagger UI |
 | `http://localhost:8080/v3/api-docs` | OpenAPI document |
 
@@ -79,7 +75,7 @@ mvn spring-boot:run -Dskip.frontend=true
 ## Testing
 
 ```bash
-mvn test -Dskip.frontend=true   # fast: skips Vite build, runs all 71 Java tests
+mvn test -Dskip.frontend=true   # fast: skips Vite build, runs all 51 Java tests
 mvn verify                       # full build including frontend
 ```
 
@@ -114,18 +110,18 @@ appears on hover over the note icon in the Actions column.
 
 The ⚙ Settings menu in the top bar switches between 10 themes. The selection
 is persisted in `localStorage` and applied before first paint by an inline
-script — no flash of unstyled content. The same theme system works in both
-the JSP UI and the Vue SPA via shared CSS custom properties on `html[data-theme]`.
+script — no flash of unstyled content. Themes are CSS custom properties on
+`html[data-theme]` blocks in `frontend/src/assets/styles.css`.
 
 ## Building and testing
 
-Compile, run tests, and package the WAR:
+Compile, run tests, and package the JAR:
 
 ```bash
 mvn verify
 ```
 
-The WAR is produced at `target/contact-manager.war`.
+The JAR is produced at `target/contact-manager.jar`.
 
 ## Application structure
 
@@ -133,12 +129,13 @@ The WAR is produced at `target/contact-manager.war`.
 contact-manager/
 ├── frontend/                       # Vue 3 SPA source
 │   ├── src/
-│   │   ├── api/                    # REST client (http.ts, persons.ts)
-│   │   ├── components/             # PersonForm, ThemePicker, ClassicUiLink
+│   │   ├── api/                    # REST client (http.ts, persons.ts, notes.ts)
+│   │   ├── assets/                 # styles.css (design tokens + 10 themes)
+│   │   ├── components/             # PersonForm, ThemePicker
 │   │   ├── composables/            # useTheme
 │   │   ├── constants/              # themes.ts
 │   │   ├── router/                 # Vue Router (index.ts)
-│   │   ├── types/                  # TypeScript types (api.ts, person.ts)
+│   │   ├── types/                  # TypeScript types (api.ts, person.ts, note.ts)
 │   │   ├── utils/                  # personValidation.ts
 │   │   ├── views/                  # PersonListView, PersonFormView, PersonDeleteView, PersonNotesView
 │   │   ├── App.vue                 # Root component (header + RouterView)
@@ -153,13 +150,12 @@ contact-manager/
 │   │   │   ├── domain/             # Person, Note, Page<T>
 │   │   │   ├── repository/         # PersonRepository, NoteRepository
 │   │   │   ├── service/            # PersonService, NoteService + impls
-│   │   │   └── web/                # JSP controllers + SpaController
-│   │   ├── resources/
-│   │   │   ├── application.properties
-│   │   │   ├── db/                 # schema.sql, data.sql (142 people + ~323 notes)
-│   │   │   └── static/app/         # Vite build output (gitignored, generated)
-│   │   └── webapp/WEB-INF/views/   # JSP templates, shared CSS/JS
-│   └── test/                       # 71 tests across 10 test classes
+│   │   │   └── web/                # SpaController (root redirect + SPA forwards)
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       ├── db/                 # schema.sql, data.sql (142 people + ~323 notes)
+│   │       └── static/app/         # Vite build output (gitignored, generated)
+│   └── test/                       # 51 tests across 8 test classes
 ├── docs/
 │   ├── architecture.md
 │   ├── current-status.md
@@ -171,7 +167,7 @@ contact-manager/
 ## Field validation
 
 All fields are validated server-side (Bean Validation, authoritative) and
-client-side (jQuery in JSP UI; TypeScript in SPA):
+client-side in the Vue forms (immediate feedback):
 
 | Field | Rule |
 |---|---|

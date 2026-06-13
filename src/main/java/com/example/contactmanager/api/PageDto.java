@@ -26,10 +26,10 @@ public record PageDto<T>(
      */
     public static <S, T> PageDto<T> of(Page<S> page, Function<S, T> mapper) {
         return new PageDto<>(
-                page.getItems().stream().map(mapper).toList(),
-                page.getPageNumber(),
-                page.getPageSize(),
-                page.getTotalItems(),
-                page.getTotalPages());
+                page.items().stream().map(mapper).toList(),
+                page.pageNumber(),
+                page.pageSize(),
+                page.totalItems(),
+                page.totalPages());
     }
 }

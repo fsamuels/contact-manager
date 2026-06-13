@@ -52,13 +52,13 @@ class DefaultPersonServiceTest {
         }
 
         Page<Person> pastEnd = personService.listPeople(99, 10);
-        assertEquals(2, pastEnd.getPageNumber());
-        assertEquals(1, pastEnd.getItems().size());
+        assertEquals(2, pastEnd.pageNumber());
+        assertEquals(1, pastEnd.items().size());
 
         Page<Person> belowStart = personService.listPeople(0, 10);
-        assertEquals(1, belowStart.getPageNumber());
-        assertEquals(10, belowStart.getItems().size());
-        assertEquals(11, belowStart.getTotalItems());
+        assertEquals(1, belowStart.pageNumber());
+        assertEquals(10, belowStart.items().size());
+        assertEquals(11, belowStart.totalItems());
     }
 
     @Test
